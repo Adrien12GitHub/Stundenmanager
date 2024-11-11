@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "935695633125",
+    "project_id": "stundenmanager-msc",
+    "storage_bucket": "stundenmanager-msc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935695633125:android:a57262489637e75f0ca20c",
+        "android_client_info": {
+          "package_name": "com.example.stundenmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935695633125-vnuu2kn8foir8p1740a7pmr5bggumthe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.stundenmanager",
+            "certificate_hash": "90cb1f98afec6f3cff0af0946474d7ddd3a88174"
+          }
+        },
+        {
+          "client_id": "935695633125-ap7m15frgnkb8g4s28h91t706irpia6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY4RqRWA7d-AVDTnXPE058YhKF1hSbJgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "935695633125-ap7m15frgnkb8g4s28h91t706irpia6v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

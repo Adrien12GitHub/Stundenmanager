@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.stundenmanager" />
+                  <option name="mobileSdkAppId" value="1:935695633125:android:a57262489637e75f0ca20c" />
+                  <option name="projectId" value="stundenmanager-msc" />
+                  <option name="projectNumber" value="935695633125" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
