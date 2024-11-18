@@ -8,14 +8,69 @@
     tools:context=".HomeActivity">
 
     <TextView
+        android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="16dp"
-        android:text="Home Page"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="36dp"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/workHoursButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Arbeitszeiten"
+        app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/absencesButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Abwesenheiten"
+        app:layout_constraintTop_toBottomOf="@id/workHoursButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/messagesButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nachrichten"
+        app:layout_constraintTop_toBottomOf="@id/absencesButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/reportsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Berichte"
+        app:layout_constraintTop_toBottomOf="@id/messagesButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/statisticsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Statistiken"
+        app:layout_constraintTop_toBottomOf="@id/reportsButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
