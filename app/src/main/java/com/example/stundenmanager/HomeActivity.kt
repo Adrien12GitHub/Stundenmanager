@@ -40,5 +40,6 @@ class HomeActivity : AppCompatActivity() {
         findViewById<Button>(R.id.statisticsButton).setOnClickListener {
             startActivity(Intent(this, StatisticsActivity::class.java))
         }
+
     }
 }
