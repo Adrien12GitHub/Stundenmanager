@@ -6,6 +6,32 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <!-- Work Hours -->
+    <string name="my_workhours">Meine Arbeitszeiten</string>
+    <string name="contentDes_add">add working hour</string>
+    <string name="contentDes_start">start tracking working hour</string>
+    <string name="item_date">Datum: %1$s</string>
+    <string name="item_period">Zeitraum: %1$s - %2$s</string>
+    <string name="item_pause">Pause: %1$d Minuten </string>
+    <string name="item_worked_hours">Gearbeitete Stunden: %1.2f</string>
+    <string name="item_comment">Kommentar: %1$s</string>
+    <string name="dialog_starttime">Startzeit (HH:mm) </string>
+    <string name="dialog_endtime">Endzeit (HH:mm) </string>
+    <string name="dialog_pause">Pause (in Minuten) </string>
+    <string name="dialog_comment">Kommentar </string>
+    <string name="dialog_savebtn">Speichern</string>
+    <string name="auto_start">Automatisch gestartet</string>
+    <string name="start_tracking">Tracking gestartet!</string>
+    <string name="start_tracking_error">Fehler beim Starten des Trackings!</string>
+    <string name="time_invalid">Ungültige Zeitangabe! Bitte HH:mm verwenden.</string>
+    <string name="start_end_error">Startzeit kann nicht nach der Endzeit liegen!</string>
+    <string name="hours_negative">Gearbeitete Stunden können nicht negativ sein!</string>
+    <string name="calc_error">Fehler bei der Zeitberechnung:</string>
+    <string name="time_saved">Arbeitszeit gespeichert!</string>
+    <string name="saving_error">Fehler beim Speichern!</string>
+    <string name="loading_error">Fehler beim Laden der Daten!</string>
+
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

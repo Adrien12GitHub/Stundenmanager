@@ -1,0 +1,48 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvWorkDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_date"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvWorkTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_period" />
+
+        <TextView
+            android:id="@+id/tvBreak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_pause" />
+
+        <TextView
+            android:id="@+id/tvHoursWorked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_worked_hours" />
+
+        <TextView
+            android:id="@+id/tvComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/item_comment" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

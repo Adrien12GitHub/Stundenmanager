@@ -25,7 +25,7 @@
             android:name=".AbsencesActivity"
             android:exported="false" />
         <activity
-            android:name=".WorkHoursActivity"
+            android:name=".workhours.WorkHoursActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
