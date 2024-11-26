@@ -8,6 +8,7 @@
 
     <!-- Work Hours -->
     <string name="my_workhours">Meine Arbeitszeiten</string>
+    <string name="tracking_notification_content">Tracking läuft...</string>
     <string name="contentDes_add">add working hour</string>
     <string name="contentDes_trackhours">tracking working hour</string>
     <string name="item_date">Datum: %1$s</string>

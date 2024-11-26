@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import android.app.Dialog
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
@@ -45,9 +47,9 @@ class WorkHoursActivity : AppCompatActivity() {
         val toggleTrackButton: Button = findViewById(R.id.toggleTrackButton)
         toggleTrackButton.setOnClickListener {
             if (isTracking) {
-                stopTracking( toggleTrackButton) // Stop
+                stopTracking(toggleTrackButton) // Stop
             } else {
-                startTracking( toggleTrackButton) // Start
+                startTracking(toggleTrackButton) // Start
             }
         }
 
@@ -55,6 +57,7 @@ class WorkHoursActivity : AppCompatActivity() {
             openManualEntryDialog()
         }
 
+        restoreTrackingState() // Restore tracking state if app is restarted
         fetchWorkHours() // Load the data at startup
     }
 
@@ -62,6 +65,8 @@ class WorkHoursActivity : AppCompatActivity() {
         Log.d("WorkHoursActivity.kt", "startTracking")
         startTime = Timestamp.now()
         isTracking = true
+        persistTrackingState(true, startTime)
+        startTrackingService()
 
         button.setCompoundDrawablesWithIntrinsicBounds(
             android.R.drawable.ic_media_pause, 0, 0, 0
@@ -74,12 +79,15 @@ class WorkHoursActivity : AppCompatActivity() {
         Log.d("WorkHoursActivity.kt", "stopTracking")
         val endTime = Timestamp.now()
         isTracking = false
+        persistTrackingState(false, null)  // End tracking and delete start time
+        stopTrackingService()
 
         button.setCompoundDrawablesWithIntrinsicBounds(
             android.R.drawable.ic_media_play, 0, 0, 0
         )
 
         if (startTime != null) {
+            Log.d("WorkHoursActivity.kt", "stopTracking: startTime != null")
             val workedMillis = endTime.toDate().time - startTime!!.toDate().time
             val workedHours = workedMillis / (1000 * 60 * 60.0) // Calculate hours
 
@@ -93,7 +101,61 @@ class WorkHoursActivity : AppCompatActivity() {
 
             Toast.makeText(this, getString(R.string.tracking_stopped), Toast.LENGTH_SHORT).show()
             fetchWorkHours()
+        } else {
+            Log.e("WorkHoursActivity.kt", "stopTracking: startTime is null")
         }
+    }
+
+    private fun restoreTrackingState() {
+        Log.d("WorkHoursActivity.kt", "restoreTrackingState")
+        val sharedPreferences = getSharedPreferences("tracking_prefs", MODE_PRIVATE)
+        val isTrackingPersisted = sharedPreferences.getBoolean("is_tracking", false)
+        val startTimeSeconds = sharedPreferences.getLong("start_time", -1)
+
+        if (isTrackingPersisted && startTimeSeconds != -1L) {
+            Log.d("WorkHoursActivity.kt", "restoreTrackingState: isTracking = true")
+            startTime = Timestamp(startTimeSeconds, 0)
+            startTrackingService()
+            isTracking = true
+            findViewById<Button>(R.id.toggleTrackButton).setCompoundDrawablesWithIntrinsicBounds(
+                android.R.drawable.ic_media_pause, 0, 0, 0
+            )
+        } else {
+            Log.d("WorkHoursActivity.kt", "restoreTrackingState: isTracking = false")
+            isTracking = false
+
+            // Set the button to the play icon (tracking is not running)
+            findViewById<Button>(R.id.toggleTrackButton).setCompoundDrawablesWithIntrinsicBounds(
+                android.R.drawable.ic_media_play, 0, 0, 0
+            )
+        }
+
+    }
+
+    private fun persistTrackingState(isTracking: Boolean, startTime: Timestamp?) {
+        Log.d("WorkHoursActivity.kt", "persistTrackingState")
+        val sharedPreferences = getSharedPreferences("tracking_prefs", MODE_PRIVATE)
+        //sharedPreferences.edit().putBoolean("is_tracking", isTracking).apply()
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("is_tracking", isTracking) // Saving the tracking status
+        startTime?.let { editor.putLong("start_time", it.seconds) } // Save the start time (if available)
+        editor.apply()
+    }
+
+    private fun startTrackingService() {
+        Log.d("WorkHoursActivity.kt", "startTrackingService")
+        val intent = Intent(this, TrackingService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent) // For Android 8.0 and higher
+        } else {
+            startService(intent) // For older versions
+        }
+    }
+
+    private fun stopTrackingService() {
+        Log.d("WorkHoursActivity.kt", "stopTrackingService")
+        val intent = Intent(this, TrackingService::class.java)
+        stopService(intent)
     }
 
     private fun openManualEntryDialog() {
@@ -189,6 +251,7 @@ class WorkHoursActivity : AppCompatActivity() {
     ) {
         Log.d("WorkHoursActivity.kt", "saveWorkHours")
         val userId = auth.currentUser?.uid ?: return
+        Log.d("WorkHoursActivity.kt", "User ID: $userId")
         val workHoursData = hashMapOf(
             "startTime" to startTime,
             "endTime" to endTime,
@@ -249,5 +312,4 @@ class WorkHoursActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.loading_error), Toast.LENGTH_SHORT).show()
             }
     }
-
 }
