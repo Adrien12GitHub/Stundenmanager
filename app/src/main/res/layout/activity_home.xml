@@ -19,58 +19,78 @@
         tools:layout_editor_absoluteY="36dp"
         tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/workHoursButton"
-        android:layout_width="0dp"
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arbeitszeiten"
-        app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
         android:layout_marginTop="16dp"/>
 
-    <Button
-        android:id="@+id/absencesButton"
-        android:layout_width="0dp"
+    <!-- Menüleiste -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Abwesenheiten"
-        app:layout_constraintTop_toBottomOf="@id/workHoursButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        android:layout_marginTop="16dp"/>
+        android:layout_gravity="bottom"
+        android:layout_marginTop="264dp"
+        android:background="#DDDDDD"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datePicker"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
 
-    <Button
-        android:id="@+id/messagesButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Nachrichten"
-        app:layout_constraintTop_toBottomOf="@id/absencesButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        android:layout_marginTop="16dp"/>
+        <ImageButton
+            android:id="@+id/menu_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Home"
+            android:src="@drawable/homepage" />
 
-    <Button
-        android:id="@+id/reportsButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Berichte"
-        app:layout_constraintTop_toBottomOf="@id/messagesButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        android:layout_marginTop="16dp"/>
+        <ImageButton
+            android:id="@+id/menu_workhours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Work Hours"
+            android:src="@drawable/workhours" />
 
-    <Button
-        android:id="@+id/statisticsButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Statistiken"
-        app:layout_constraintTop_toBottomOf="@id/reportsButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        android:layout_marginTop="16dp"/>
+        <ImageButton
+            android:id="@+id/menu_absences"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Absences"
+            android:src="@drawable/absences" />
+
+        <ImageButton
+            android:id="@+id/menu_messages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Messages"
+            android:src="@drawable/messages" />
+
+        <ImageButton
+            android:id="@+id/menu_reports"
+            android:layout_width="wrap_content"
+            android:layout_height="49dp"
+            android:background="@null"
+            android:contentDescription="Reports"
+            android:src="@drawable/reports" />
+
+        <ImageButton
+            android:id="@+id/menu_statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Statistics"
+            android:src="@drawable/statistics" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
