@@ -9,7 +9,7 @@
     <!-- Work Hours -->
     <string name="my_workhours">Meine Arbeitszeiten</string>
     <string name="contentDes_add">add working hour</string>
-    <string name="contentDes_start">start tracking working hour</string>
+    <string name="contentDes_trackhours">tracking working hour</string>
     <string name="item_date">Datum: %1$s</string>
     <string name="item_period">Zeitraum: %1$s - %2$s</string>
     <string name="item_pause">Pause: %1$d Minuten </string>
@@ -30,6 +30,8 @@
     <string name="time_saved">Arbeitszeit gespeichert!</string>
     <string name="saving_error">Fehler beim Speichern!</string>
     <string name="loading_error">Fehler beim Laden der Daten!</string>
+    <string name="tracking_started">Zeiterfassung gestartet</string>
+    <string name="tracking_stopped">Zeiterfassung gestoppt</string>
 
 
     <string name="lorem_ipsum">

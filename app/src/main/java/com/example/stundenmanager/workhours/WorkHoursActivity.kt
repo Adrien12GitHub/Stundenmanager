@@ -25,6 +25,8 @@ class WorkHoursActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var isTracking = false // Flag: Whether tracking is running
+    private var startTime: Timestamp? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +40,16 @@ class WorkHoursActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        //val startButton: Button = findViewById(R.id.startButton)
         val addButton: Button = findViewById(R.id.addButton)
 
-        /*
-        startButton.setOnClickListener {
-            trackWorkHours()
+        val toggleTrackButton: Button = findViewById(R.id.toggleTrackButton)
+        toggleTrackButton.setOnClickListener {
+            if (isTracking) {
+                stopTracking( toggleTrackButton) // Stop
+            } else {
+                startTracking( toggleTrackButton) // Start
+            }
         }
-         */
 
         addButton.setOnClickListener {
             openManualEntryDialog()
@@ -54,30 +58,43 @@ class WorkHoursActivity : AppCompatActivity() {
         fetchWorkHours() // Load the data at startup
     }
 
-    /* // Tracking Work Hours with startButton
-    private fun trackWorkHours() {
-        val currentTimestamp = Timestamp.now()
-        val userId = auth.currentUser?.uid ?: return
+    private fun startTracking(button: Button) {
+        Log.d("WorkHoursActivity.kt", "startTracking")
+        startTime = Timestamp.now()
+        isTracking = true
 
-        val workHoursData = hashMapOf(
-            "startTime" to currentTimestamp,
-            "endTime" to null,
-            "breakDuration" to 0,
-            "hoursWorked" to null,
-            "comment" to getString(R.string.auto_start)
+        button.setCompoundDrawablesWithIntrinsicBounds(
+            android.R.drawable.ic_media_pause, 0, 0, 0
         )
 
-        db.collection("users").document(userId).collection("workHours")
-            .add(workHoursData)
-            .addOnSuccessListener {
-                Toast.makeText(this, getString(R.string.start_tracking), Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, getString(R.string.start_tracking_error), Toast.LENGTH_SHORT).show()
-            }
-        fetchWorkHours()
+        Toast.makeText(this, getString(R.string.tracking_started), Toast.LENGTH_SHORT).show()
     }
-     */
+
+    private fun stopTracking(button: Button) {
+        Log.d("WorkHoursActivity.kt", "stopTracking")
+        val endTime = Timestamp.now()
+        isTracking = false
+
+        button.setCompoundDrawablesWithIntrinsicBounds(
+            android.R.drawable.ic_media_play, 0, 0, 0
+        )
+
+        if (startTime != null) {
+            val workedMillis = endTime.toDate().time - startTime!!.toDate().time
+            val workedHours = workedMillis / (1000 * 60 * 60.0) // Calculate hours
+
+            saveWorkHours(
+                startTime = startTime!!,
+                endTime = endTime,
+                breakDuration = 0, // No pause with automatic tracking
+                comment = getString(R.string.auto_start),
+                hoursWorked = workedHours
+            )
+
+            Toast.makeText(this, getString(R.string.tracking_stopped), Toast.LENGTH_SHORT).show()
+            fetchWorkHours()
+        }
+    }
 
     private fun openManualEntryDialog() {
         Log.d("WorkHoursActivity.kt", "openManualEntryDialog")
