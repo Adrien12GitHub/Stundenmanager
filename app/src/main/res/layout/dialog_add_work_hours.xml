@@ -11,13 +11,13 @@
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center">
 
         <EditText
             android:id="@+id/dialogStartTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="480dp"
             android:minHeight="50dp"
             android:hint="@string/dialog_starttime"
             android:inputType="time" />
@@ -26,7 +26,6 @@
             android:id="@+id/dialogEndTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="480dp"
             android:minHeight="50dp"
             android:hint="@string/dialog_endtime"
             android:inputType="time" />
@@ -35,7 +34,6 @@
             android:id="@+id/dialogBreakDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="480dp"
             android:minHeight="50dp"
             android:hint="@string/dialog_pause"
             android:inputType="number" />
@@ -44,10 +42,9 @@
             android:id="@+id/dialogComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="480dp"
             android:minHeight="50dp"
             android:hint="@string/dialog_comment"
-            android:inputType="text" />
+            android:inputType="textMultiLine" />
 
         <Button
             android:id="@+id/dialogSaveButton"

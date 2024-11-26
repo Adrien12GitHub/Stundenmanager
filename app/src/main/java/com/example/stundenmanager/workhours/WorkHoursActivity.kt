@@ -6,6 +6,8 @@ import android.widget.Button
 import android.widget.Toast
 import android.app.Dialog
 import android.util.Log
+import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -81,6 +83,13 @@ class WorkHoursActivity : AppCompatActivity() {
         Log.d("WorkHoursActivity.kt", "openManualEntryDialog")
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_add_work_hours)
+
+        // Set dialogue width to match_parent and height to wrap_content
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT, // Width: match_parent
+            ViewGroup.LayoutParams.WRAP_CONTENT // Height: wrap_content
+        )
+        dialog.window?.setGravity(Gravity.CENTER) // This centres the dialogue on the screen.
 
         val startTimeInput = dialog.findViewById<EditText>(R.id.dialogStartTime)
         val endTimeInput = dialog.findViewById<EditText>(R.id.dialogEndTime)
