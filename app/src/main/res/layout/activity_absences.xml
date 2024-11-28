@@ -73,6 +73,8 @@
             android:layout_height="wrap_content"
             android:ems="6"
             android:inputType="date"
+            android:hint=" dd/mm/yyyy"
+            android:textColorHint="@android:color/darker_gray"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="226dp" />
     </LinearLayout>
@@ -101,6 +103,8 @@
             android:layout_height="wrap_content"
             android:ems="6"
             android:inputType="date"
+            android:hint=" dd/mm/yyyy"
+            android:textColorHint="@android:color/darker_gray"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="226dp" />
     </LinearLayout>
