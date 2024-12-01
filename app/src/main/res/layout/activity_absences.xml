@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AbsencesActivity">
+    tools:context=".AbsencesActivity"
+    tools:ignore="ExtraText">
 
     <TextView
         android:id="@+id/absences"
@@ -19,4 +20,190 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="36dp"
         tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/grund"
+        app:layout_constraintTop_toBottomOf="@+id/absences"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        app:layout_constraintWidth_percent="0.8">
+
+        <TextView
+            tools:ignore="MissingConstraints"
+            android:id="@+id/textViewGrund"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="Bitte Grund auswählen:" />
+
+        <Spinner
+            android:id="@+id/reasonSpinner"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/reason_array"
+            app:layout_constraintWidth_percent="0.8" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/zeitraumVon"
+        app:layout_constraintTop_toBottomOf="@+id/grund"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintWidth_percent="0.8">
+
+        <TextView
+            android:id="@+id/textViewTageVon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zeitraum  von: "
+            android:textSize="18dp"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/editTextDateFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="date"
+            android:hint=" dd/mm/yyyy"
+            android:textColorHint="@android:color/darker_gray"
+            tools:layout_editor_absoluteX="65dp"
+            tools:layout_editor_absoluteY="226dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/zeitraumBis"
+        app:layout_constraintTop_toBottomOf="@+id/zeitraumVon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8">
+
+        <TextView
+            android:id="@+id/textViewTageBis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="                    bis: "
+            android:textSize="18dp"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/editTextDateTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:inputType="date"
+            android:hint=" dd/mm/yyyy"
+            android:textColorHint="@android:color/darker_gray"
+            tools:layout_editor_absoluteX="65dp"
+            tools:layout_editor_absoluteY="226dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/uploadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anhang hochladen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/zeitraumBis"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/filePreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ausgewählte Datei: Keine"
+        android:textSize="18dp"
+        app:layout_constraintTop_toBottomOf="@+id/uploadButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Senden"
+        app:layout_constraintTop_toBottomOf="@+id/filePreview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Menüleiste -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="264dp"
+        android:background="#DDDDDD"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendButton"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
+
+        <ImageButton
+            android:id="@+id/menu_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Home"
+            android:src="@drawable/homepage" />
+
+        <ImageButton
+            android:id="@+id/menu_workhours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Work Hours"
+            android:src="@drawable/workhours" />
+
+        <ImageButton
+            android:id="@+id/menu_absences"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Absences"
+            android:src="@drawable/absences" />
+
+        <ImageButton
+            android:id="@+id/menu_messages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Messages"
+            android:src="@drawable/messages" />
+
+        <ImageButton
+            android:id="@+id/menu_reports"
+            android:layout_width="wrap_content"
+            android:layout_height="49dp"
+            android:background="@null"
+            android:contentDescription="Reports"
+            android:src="@drawable/reports" />
+
+        <ImageButton
+            android:id="@+id/menu_statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="Statistics"
+            android:src="@drawable/statistics" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

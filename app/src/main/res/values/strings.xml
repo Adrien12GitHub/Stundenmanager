@@ -80,4 +80,11 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="Register">Register</string>
+    <string-array name="reason_array">
+        <item>Urlaub</item>
+        <item>Krankheit</item>
+        <item>Stundenabbau</item>
+        <item>Sonstiges</item>
+    </string-array>
+
 </resources>
