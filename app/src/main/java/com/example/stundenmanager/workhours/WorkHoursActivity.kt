@@ -11,11 +11,17 @@ import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.stundenmanager.AbsencesActivity
+import com.example.stundenmanager.HomeActivity
+import com.example.stundenmanager.MessagesActivity
+import com.example.stundenmanager.ReportsActivity
+import com.example.stundenmanager.StatisticsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.Timestamp
@@ -59,6 +65,9 @@ class WorkHoursActivity : AppCompatActivity() {
 
         restoreTrackingState() // Restore tracking state if app is restarted
         fetchWorkHours() // Load the data at startup
+
+        // Menü-Button-Listener
+        setupMenuNavigation()
     }
 
     private fun startTracking(button: Button) {
@@ -311,5 +320,26 @@ class WorkHoursActivity : AppCompatActivity() {
                 Log.d("WorkHoursActivity.kt", "fetchWorkHours: addOnFailureListener")
                 Toast.makeText(this, getString(R.string.loading_error), Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun setupMenuNavigation() {
+        findViewById<ImageButton>(R.id.menu_home).setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_workhours).setOnClickListener {
+            Toast.makeText(this, "Du bist bereits auf der Arbeitszeiten-Seite", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<ImageButton>(R.id.menu_absences).setOnClickListener {
+            startActivity(Intent(this, AbsencesActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_messages).setOnClickListener {
+            startActivity(Intent(this, MessagesActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_reports).setOnClickListener {
+            startActivity(Intent(this, ReportsActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_statistics).setOnClickListener {
+            startActivity(Intent(this, StatisticsActivity::class.java))
+        }
     }
 }
