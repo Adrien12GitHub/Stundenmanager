@@ -141,6 +141,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/absencesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/sendButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_absence" />
+
     <!-- Menüleiste -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -153,7 +164,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendButton"
+        app:layout_constraintTop_toBottomOf="@+id/absencesRecyclerView"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="0dp">

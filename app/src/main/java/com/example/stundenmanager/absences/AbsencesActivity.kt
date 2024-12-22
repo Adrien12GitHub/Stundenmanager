@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stundenmanager.workhours.WorkHoursActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.Timestamp
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,6 +70,10 @@ class AbsencesActivity : AppCompatActivity() {
                 filePreview.text = "Ausgewählte Datei: Keine"
             }
         }
+
+        // Fetch and display absences
+        fetchAndDisplayAbsences()
+
         // Menü-Button-Listener
         setupMenuNavigation()
     }
@@ -157,6 +161,35 @@ class AbsencesActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Log.d("AbsencesActivity.kt", "saveAbsences: addOnFailureListener")
                 Toast.makeText(this, "Fehler beim Speichern der Abwesenheiten", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun fetchAndDisplayAbsences() {
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("users").document(userId).collection("absences")
+            .get().addOnSuccessListener { documents ->
+                val absencesList = mutableListOf<Absence>()
+                for (document in documents) {
+                    val reason = document.getString("reason") ?: ""
+                    val dateFrom = document.getTimestamp("dateFrom") ?: continue
+                    val dateTo = document.getTimestamp("dateTo") ?: continue
+
+                    absencesList.add(
+                        Absence(
+                            reason = reason,
+                            dateFrom = dateFrom,
+                            dateTo = dateTo
+                        )
+                    )
+                }
+
+                // Set up RecyclerView
+                val recyclerView = findViewById<RecyclerView>(R.id.absencesRecyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(this)
+                recyclerView.adapter = AbsencesAdapter(absencesList)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Fehler beim Laden der Abwesenheiten", Toast.LENGTH_SHORT).show()
             }
     }
 
