@@ -34,6 +34,9 @@
     <string name="tracking_started">Zeiterfassung gestartet</string>
     <string name="tracking_stopped">Zeiterfassung gestoppt</string>
 
+    <string name="saved_offline">Wird offline gespeichert, bitte die App bis zur nächsten Synchronisation nicht schließen!</string>
+    <string name="synced_data">Offline-Daten synchronisiert</string>
+
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

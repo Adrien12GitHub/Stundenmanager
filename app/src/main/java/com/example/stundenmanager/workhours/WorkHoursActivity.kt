@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stundenmanager.AbsencesActivity
 import com.example.stundenmanager.HomeActivity
 import com.example.stundenmanager.MessagesActivity
+import com.example.stundenmanager.NetworkUtils
+import com.example.stundenmanager.OfflineDataStore
 import com.example.stundenmanager.ReportsActivity
 import com.example.stundenmanager.StatisticsActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -261,6 +263,7 @@ class WorkHoursActivity : AppCompatActivity() {
         Log.d("WorkHoursActivity.kt", "saveWorkHours")
         val userId = auth.currentUser?.uid ?: return
         Log.d("WorkHoursActivity.kt", "User ID: $userId")
+        /*
         val workHoursData = hashMapOf(
             "startTime" to startTime,
             "endTime" to endTime,
@@ -269,16 +272,35 @@ class WorkHoursActivity : AppCompatActivity() {
             "comment" to comment
         )
 
-        db.collection("users").document(userId).collection("workHours")
-            .add(workHoursData)
-            .addOnSuccessListener {
-                Log.d("WorkHoursActivity.kt", "saveWorkHours: addOnSuccessListener")
-                Toast.makeText(this, getString(R.string.time_saved), Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Log.d("WorkHoursActivity.kt", "saveWorkHours: addOnFailureListener")
-                Toast.makeText(this, getString(R.string.saving_error), Toast.LENGTH_SHORT).show()
-            }
+         */
+        val workHoursData = WorkHour(
+            startTime = startTime,
+            endTime = endTime,
+            breakDuration = breakDuration,
+            hoursWorked = hoursWorked,
+            comment = comment
+        )
+
+        if (NetworkUtils.isConnected(this)) {
+            // Online: Save in Firebase
+            db.collection("users").document(userId).collection("workHours")
+                .add(workHoursData.toHashMap())
+                .addOnSuccessListener {
+                    Log.d("WorkHoursActivity.kt", "saveWorkHours: addOnSuccessListener")
+                    Toast.makeText(this, getString(R.string.time_saved), Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Log.e("WorkHoursActivity.kt", "saveWorkHours: addOnFailureListener")
+                    Toast.makeText(this, getString(R.string.saving_error), Toast.LENGTH_SHORT).show()
+                    OfflineDataStore.addWorkHour(workHoursData) // Save offline
+                }
+        } else {
+            // Offline: Save directly to RAM
+            Log.d("WorkHoursActivity.kt", "Offline mode: Saving to OfflineDataStore")
+            OfflineDataStore.addWorkHour(workHoursData)
+            Toast.makeText(this, getString(R.string.saved_offline), Toast.LENGTH_SHORT).show()
+        }
+
         fetchWorkHours()
     }
 
@@ -340,6 +362,32 @@ class WorkHoursActivity : AppCompatActivity() {
         }
         findViewById<ImageButton>(R.id.menu_statistics).setOnClickListener {
             startActivity(Intent(this, StatisticsActivity::class.java))
+        }
+    }
+
+    fun syncOfflineData() {
+        Log.d("WorkHoursActivity.kt", "syncOfflineData")
+        if (!NetworkUtils.isConnected(this)) return // If offline, do nothing
+
+        val userId = auth.currentUser?.uid ?: return
+        val unsyncedWorkHours = OfflineDataStore.getUnsyncedWorkHours()
+        if (unsyncedWorkHours.isEmpty()) {
+            Log.d("WorkHoursActivity.kt", "No offline data to sync")
+            return
+        }
+
+        val firestore = FirebaseFirestore.getInstance()
+        unsyncedWorkHours.forEach { workHour ->
+            firestore.collection("users").document(userId).collection("workHours")
+                .add(workHour.toHashMap())
+                .addOnSuccessListener {
+                    Log.d("WorkHoursActivity.kt", "syncOfflineData: Synced successfully")
+                    OfflineDataStore.clearSyncedWorkHours() // Delete successfully synchronised data
+                    Toast.makeText(this, getString(R.string.synced_data), Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Log.e("WorkHoursActivity.kt", "syncOfflineData: Sync failed")
+                }
         }
     }
 }

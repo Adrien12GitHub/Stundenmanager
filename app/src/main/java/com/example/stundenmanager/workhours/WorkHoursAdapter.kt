@@ -16,7 +16,17 @@ data class WorkHour(
     val breakDuration: Int,
     val hoursWorked: Double,
     val comment: String
-)
+) {
+    fun toHashMap(): Map<String, Any> {
+        return mapOf(
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "breakDuration" to breakDuration,
+            "hoursWorked" to hoursWorked,
+            "comment" to comment
+        )
+    }
+}
 
 class WorkHoursAdapter(private val workHoursList: List<WorkHour>) :
     RecyclerView.Adapter<WorkHoursAdapter.WorkHoursViewHolder>() {
