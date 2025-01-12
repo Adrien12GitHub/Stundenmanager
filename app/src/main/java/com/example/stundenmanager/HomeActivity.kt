@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.stundenmanager.workhours.WorkHoursActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : AppCompatActivity() {
@@ -23,9 +24,16 @@ class HomeActivity : AppCompatActivity() {
         val user = auth.currentUser
         val email = user?.email
         val username = email?.substringBefore('@') ?: "Benutzer"
-
+        val logoutButton: FloatingActionButton = findViewById(R.id.logoutButton)
         val welcomeTextView: TextView = findViewById(R.id.welcomeTextView)
         welcomeTextView.text = "Willkommen, $username!"
+
+        // wenn user clicks on logout button
+        logoutButton.setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         // Menü-Button-Listener
         setupMenuNavigation()
