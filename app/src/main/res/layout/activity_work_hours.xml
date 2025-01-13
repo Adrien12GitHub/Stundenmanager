@@ -101,7 +101,7 @@
         <ImageButton
             android:id="@+id/menu_reports"
             android:layout_width="wrap_content"
-            android:layout_height="49dp"
+            android:layout_height="wrap_content"
             android:background="@null"
             android:contentDescription="Reports"
             android:src="@drawable/reports" />
