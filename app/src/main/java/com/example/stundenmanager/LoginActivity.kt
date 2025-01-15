@@ -17,6 +17,15 @@ class LoginActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        // User already logged in?
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
+
+        // Login-Button-Listener
         findViewById<Button>(R.id.loginButton).setOnClickListener {
             val email = findViewById<EditText>(R.id.emailEditText).text.toString()
             val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
