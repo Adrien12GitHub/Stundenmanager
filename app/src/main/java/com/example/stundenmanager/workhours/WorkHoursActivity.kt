@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stundenmanager.AbsencesActivity
+import com.example.stundenmanager.absences.AbsencesActivity
 import com.example.stundenmanager.HomeActivity
 import com.example.stundenmanager.MessagesActivity
 import com.example.stundenmanager.NetworkUtils

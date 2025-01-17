@@ -1,4 +1,4 @@
-package com.example.stundenmanager
+package com.example.stundenmanager.absences
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -9,6 +9,11 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.stundenmanager.HomeActivity
+import com.example.stundenmanager.MessagesActivity
+import com.example.stundenmanager.R
+import com.example.stundenmanager.ReportsActivity
+import com.example.stundenmanager.StatisticsActivity
 import com.example.stundenmanager.workhours.WorkHoursActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

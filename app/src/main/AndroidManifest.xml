@@ -28,7 +28,7 @@
             android:name=".MessagesActivity"
             android:exported="false" />
         <activity
-            android:name=".AbsencesActivity"
+            android:name=".absences.AbsencesActivity"
             android:exported="false" />
         <activity
             android:name=".workhours.WorkHoursActivity"
