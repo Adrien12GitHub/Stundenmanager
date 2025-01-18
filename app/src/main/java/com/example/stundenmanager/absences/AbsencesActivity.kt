@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stundenmanager.HomeActivity
 import com.example.stundenmanager.MessagesActivity
+import com.example.stundenmanager.NetworkUtils
 import com.example.stundenmanager.R
 import com.example.stundenmanager.ReportsActivity
 import com.example.stundenmanager.StatisticsActivity
@@ -49,6 +50,8 @@ class AbsencesActivity : AppCompatActivity() {
         // Set up DatePicker for date fields
         setUpDatePicker(editTextDateFrom)
         setUpDatePicker(editTextDateTo)
+
+        AbsencesSyncManager.syncOfflineAbsences(this)
 
         // Set up Upload Button
         uploadButton.setOnClickListener {
@@ -142,6 +145,7 @@ class AbsencesActivity : AppCompatActivity() {
         }
     }
 
+    /*
     private fun saveAbsences(
         reason: String,
         dateFrom: Timestamp,
@@ -168,6 +172,40 @@ class AbsencesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fehler beim Speichern der Abwesenheiten", Toast.LENGTH_SHORT).show()
             }
     }
+     */
+
+    private fun saveAbsences(reason: String, dateFrom: Timestamp, dateTo: Timestamp, file: Uri) {
+        Log.d("AbsencesActivity.kt", "saveAbsences")
+        if (!NetworkUtils.isConnected(this)) {
+            Log.d("AbsencesActivity.kt", "Offline mode: Saving absence locally")
+            OfflineAbsencesStore.addAbsence(Absence(reason, dateFrom, dateTo))
+            Toast.makeText(this, "Abwesenheit lokal gespeichert", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val userId = auth.currentUser?.uid ?: return
+
+        val filePath = file.toString() // Conversion of the file URI into a string
+
+        val absenceData = hashMapOf(
+            "reason" to reason,
+            "dateFrom" to dateFrom,
+            "dateTo" to dateTo,
+            "fileUri" to filePath
+        )
+
+        db.collection("users").document(userId).collection("absences")
+            .add(absenceData)
+            .addOnSuccessListener {
+                Log.d("AbsencesActivity.kt", "Absence successfully saved online")
+                Toast.makeText(this, "Abwesenheiten erfolgreich gespeichert", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Log.e("AbsencesActivity.kt", "Error saving absence online")
+                Toast.makeText(this, "Fehler beim Speichern der Abwesenheiten", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     private fun fetchAndDisplayAbsences() {
         val userId = auth.currentUser?.uid ?: return
@@ -192,10 +230,28 @@ class AbsencesActivity : AppCompatActivity() {
                 val recyclerView = findViewById<RecyclerView>(R.id.absencesRecyclerView)
                 recyclerView.layoutManager = LinearLayoutManager(this)
                 recyclerView.adapter = AbsencesAdapter(absencesList)
+
+                /// Display of online data
+                displayAbsences(absencesList)
+
+                // If no data from Firebase is available, show local data
+                if (absencesList.isEmpty()) {
+                    val offlineAbsences = OfflineAbsencesStore.getUnsyncedAbsences()
+                    if (offlineAbsences.isNotEmpty()) {
+                        displayAbsences(offlineAbsences)
+                    }
+                }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Fehler beim Laden der Abwesenheiten", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Auxiliary method for displaying absences
+    private fun displayAbsences(absencesList: List<Absence>) {
+        val recyclerView = findViewById<RecyclerView>(R.id.absencesRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = AbsencesAdapter(absencesList)
     }
 
     private fun setupMenuNavigation() {
