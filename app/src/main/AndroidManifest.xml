@@ -43,15 +43,11 @@
             android:theme="@style/Theme.Stundenmanager" />
         <activity
             android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.theme.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.Stundenmanager" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Stundenmanager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
