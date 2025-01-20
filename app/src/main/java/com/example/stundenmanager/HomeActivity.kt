@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
         // wenn user clicks on logout button
         logoutButton.setOnClickListener {
             auth.signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
