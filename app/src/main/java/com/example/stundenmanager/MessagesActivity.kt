@@ -24,11 +24,15 @@ class MessagesActivity : AppCompatActivity() {
 
         fetchUserIds { users ->
             Log.d("MessagesActivity", "Fetched user IDs: $users")
-            val shifts = assignShiftsForUser(userId, users)
-            Log.d("MessagesActivity", "Assigned shifts: $shifts")
-            val recyclerView: RecyclerView = findViewById(R.id.rvShifts)
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            recyclerView.adapter = ShiftAdapter(shifts)
+
+            fetchUserShift(userId) { initialShift ->
+                Log.d("MessagesActivity", "Fetched initial shift: $initialShift")
+                val shifts = assignShiftsForUser(userId, users, initialShift)
+                Log.d("MessagesActivity", "Assigned shifts: $shifts")
+                val recyclerView: RecyclerView = findViewById(R.id.rvShifts)
+                recyclerView.layoutManager = LinearLayoutManager(this)
+                recyclerView.adapter = ShiftAdapter(shifts)
+            }
         }
 
         // Menü-Button-Listener
@@ -49,7 +53,24 @@ class MessagesActivity : AppCompatActivity() {
             }
     }
 
-    private fun assignShiftsForUser(userId: String, users: List<String>): List<Shift> {
+    private fun fetchUserShift(userId: String, callback: (String) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val shift = document.getString("shift") ?: "morning" // Default to "morning" if not found
+                    callback(shift)
+                } else {
+                    callback("morning") // Default shift in case of error
+                }
+            }
+            .addOnFailureListener {
+                callback("morning") // Default shift in case of error
+            }
+    }
+
+    private fun assignShiftsForUser(userId: String, users: List<String>, initialShift: String): List<Shift> {
         val shifts = mutableListOf<Shift>()
         val calendar = Calendar.getInstance()
 
@@ -59,17 +80,13 @@ class MessagesActivity : AppCompatActivity() {
         val lateShiftStartHour = 14
         val lateShiftEndHour = 22
 
-        // Current week
-        val currentWeek = calendar.get(Calendar.WEEK_OF_YEAR)
-
         // Early or late shift this week
-        val userIndex = users.indexOf(userId)
-        val isEarlyShiftThisWeek = (currentWeek % 2 == 0) == (userIndex % 2 == 0)
+        val isEarlyShiftThisWeek = (initialShift == "morning")
 
         // Shifts for Monday to Friday
         var dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         if (dayOfWeek != Calendar.MONDAY) {
-            // Setze auf Montag der aktuellen Woche
+            // Set to Monday of the current week
             calendar.add(Calendar.DAY_OF_MONTH, Calendar.MONDAY - dayOfWeek)
         }
 
