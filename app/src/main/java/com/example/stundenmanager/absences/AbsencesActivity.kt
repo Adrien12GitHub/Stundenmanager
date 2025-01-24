@@ -69,7 +69,7 @@ class AbsencesActivity : AppCompatActivity() {
                 val dateTo = Timestamp(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(editTextDateTo.text.toString()))
                 val file = selectedFileUri
 
-                saveAbsences(reason, dateFrom, dateTo, file)
+                checkForOverlappingAbsences(reason, dateFrom, dateTo, file)
 
                 // clear the form
                 reasonSpinner.setSelection(0)
@@ -145,34 +145,25 @@ class AbsencesActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private fun saveAbsences(
-        reason: String,
-        dateFrom: Timestamp,
-        dateTo: Timestamp,
-        file: Uri
-    ) {
-        Log.d("AbsencesActivity.kt", "saveAbsences")
+    private fun checkForOverlappingAbsences(reason: String, dateFrom: Timestamp, dateTo: Timestamp, file: Uri) {
         val userId = auth.currentUser?.uid ?: return
-        val absenceData = hashMapOf(
-            "reason" to reason,
-            "dateFrom" to dateFrom,
-            "dateTo" to dateTo,
-            "fileUri" to file
-        )
-
         db.collection("users").document(userId).collection("absences")
-            .add(absenceData)
-            .addOnSuccessListener {
-                Log.d("AbsencesActivity.kt", "saveAbsences: addOnSuccessListener")
-                Toast.makeText(this, "Abwesenheiten erfolgreich gespeichert", Toast.LENGTH_SHORT).show()
+            .get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val existingDateFrom = document.getTimestamp("dateFrom") ?: continue
+                    val existingDateTo = document.getTimestamp("dateTo") ?: continue
+
+                    if (dateFrom.toDate().before(existingDateTo.toDate()) && dateTo.toDate().after(existingDateFrom.toDate())) {
+                        Toast.makeText(this, "Der angegebene Zeitraum überschneidet sich mit einer bestehenden Abwesenheit", Toast.LENGTH_SHORT).show()
+                        return@addOnSuccessListener
+                    }
+                }
+                saveAbsences(reason, dateFrom, dateTo, file)
             }
             .addOnFailureListener {
-                Log.d("AbsencesActivity.kt", "saveAbsences: addOnFailureListener")
-                Toast.makeText(this, "Fehler beim Speichern der Abwesenheiten", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Fehler beim Überprüfen der Abwesenheiten", Toast.LENGTH_SHORT).show()
             }
     }
-     */
 
     private fun saveAbsences(reason: String, dateFrom: Timestamp, dateTo: Timestamp, file: Uri) {
         Log.d("AbsencesActivity.kt", "saveAbsences")
@@ -205,7 +196,6 @@ class AbsencesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fehler beim Speichern der Abwesenheiten", Toast.LENGTH_SHORT).show()
             }
     }
-
 
     private fun fetchAndDisplayAbsences() {
         val userId = auth.currentUser?.uid ?: return
