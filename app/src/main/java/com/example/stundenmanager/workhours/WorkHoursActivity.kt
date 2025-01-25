@@ -102,16 +102,26 @@ class WorkHoursActivity : AppCompatActivity() {
             val workedMillis = endTime.toDate().time - startTime!!.toDate().time
             val workedHours = workedMillis / (1000 * 60 * 60.0) // Calculate hours
 
-            saveWorkHours(
-                startTime = startTime!!,
-                endTime = endTime,
-                breakDuration = 0, // No pause with automatic tracking
-                comment = getString(R.string.auto_start),
-                hoursWorked = workedHours
-            )
-
-            Toast.makeText(this, getString(R.string.tracking_stopped), Toast.LENGTH_SHORT).show()
-            fetchWorkHours()
+            checkForOverlappingWorkHours(startTime!!, endTime) { overlap ->
+                if (!overlap) {
+                    saveWorkHours(
+                        startTime = startTime!!,
+                        endTime = endTime,
+                        breakDuration = 0, // No pause with automatic tracking
+                        comment = getString(R.string.auto_start),
+                        hoursWorked = workedHours
+                    )
+                    startTime = null
+                    Toast.makeText(this, getString(R.string.tracking_stopped), Toast.LENGTH_SHORT).show()
+                    fetchWorkHours()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Die eingegebenen Zeiten überschneiden sich mit einer bestehenden Arbeitszeit",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         } else {
             Log.e("WorkHoursActivity.kt", "stopTracking: startTime is null")
         }
@@ -238,19 +248,53 @@ class WorkHoursActivity : AppCompatActivity() {
                 return
             }
 
-            // Storage of data in Firestore
-            saveWorkHours(
-                startTime = Timestamp(Date(startDateTime.time)),
-                endTime = Timestamp(Date(endDateTime.time)),
-                breakDuration = breakDuration,
-                comment = comment,
-                hoursWorked = workedHours
-            )
+            // Check for overlapping work hours
+            checkForOverlappingWorkHours(Timestamp(Date(startDateTime.time)), Timestamp(Date(endDateTime.time))) { overlap ->
+                if (!overlap) {
+                    // Storage of data in Firestore
+                    saveWorkHours(
+                        startTime = Timestamp(Date(startDateTime.time)),
+                        endTime = Timestamp(Date(endDateTime.time)),
+                        breakDuration = breakDuration,
+                        comment = comment,
+                        hoursWorked = workedHours
+                    )
+                } else {
+                    Log.d("WorkHoursActivity.kt", "saveManualWorkHours: Overlap")
+                    Toast.makeText(
+                        this,
+                        "Die eingegebenen Zeiten überschneiden sich mit einer bestehenden Arbeitszeit",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         } catch (e: Exception) {
             Log.e("WorkHoursActivity.kt", "saveManualWorkHours: Exception")
             Toast.makeText(this, getString(R.string.calc_error) + {e.message}, Toast.LENGTH_SHORT).show()
         }
         fetchWorkHours()
+    }
+
+    private fun checkForOverlappingWorkHours(startTime: Timestamp, endTime: Timestamp, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("users").document(userId).collection("workHours")
+            .get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val existingStartTime = document.getTimestamp("startTime") ?: continue
+                    val existingEndTime = document.getTimestamp("endTime") ?: continue
+
+                    // Check if the new work hours overlap with existing work hours
+                    if (startTime.toDate().before(existingEndTime.toDate()) && endTime.toDate().after(existingStartTime.toDate())) {
+                        callback(true) // Overlap found
+                        return@addOnSuccessListener
+                    }
+                }
+                callback(false) // No overlap
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Fehler beim Überprüfen der Arbeitszeiten", Toast.LENGTH_SHORT).show()
+                callback(true) // Treat as overlap to prevent saving
+            }
     }
 
     private fun saveWorkHours(
@@ -263,16 +307,7 @@ class WorkHoursActivity : AppCompatActivity() {
         Log.d("WorkHoursActivity.kt", "saveWorkHours")
         val userId = auth.currentUser?.uid ?: return
         Log.d("WorkHoursActivity.kt", "User ID: $userId")
-        /*
-        val workHoursData = hashMapOf(
-            "startTime" to startTime,
-            "endTime" to endTime,
-            "breakDuration" to breakDuration,
-            "hoursWorked" to hoursWorked,
-            "comment" to comment
-        )
 
-         */
         val workHoursData = WorkHour(
             startTime = startTime,
             endTime = endTime,
