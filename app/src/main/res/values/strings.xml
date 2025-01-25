@@ -89,10 +89,16 @@
         <item>Stundenabbau</item>
         <item>Sonstiges</item>
     </string-array>
+
+    <!--  Statistics -->
     <string-array name="time_filter_options">
-        <item>Letzte 7 Tage</item>
-        <item>Letzter Monat</item>
-        <item>Letztes Jahr</item>
+        <item>Last 7 days</item>
+        <item>Last month</item>
+        <item>Last year</item>
     </string-array>
+    <string name="overview_work">Work Overview</string>
+    <string name="no_data_available">No data available</string>
+    <string name="no_data_in_period">No data for the selected period</string>
+    <string name="no_absences_in_period">No absences in the selected period.</string>
 
 </resources>
