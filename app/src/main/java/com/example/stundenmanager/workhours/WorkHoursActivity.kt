@@ -1,5 +1,6 @@
 package com.example.stundenmanager.workhours
 
+import android.app.DatePickerDialog
 import com.example.stundenmanager.R
 import android.os.Bundle
 import android.widget.Button
@@ -192,26 +193,58 @@ class WorkHoursActivity : AppCompatActivity() {
         )
         dialog.window?.setGravity(Gravity.CENTER) // This centres the dialogue on the screen.
 
+        val dateInput = dialog.findViewById<EditText>(R.id.dialogDate)
         val startTimeInput = dialog.findViewById<EditText>(R.id.dialogStartTime)
         val endTimeInput = dialog.findViewById<EditText>(R.id.dialogEndTime)
         val breakInput = dialog.findViewById<EditText>(R.id.dialogBreakDuration)
         val commentInput = dialog.findViewById<EditText>(R.id.dialogComment)
         val saveButton = dialog.findViewById<Button>(R.id.dialogSaveButton)
 
+        // Format to display the date
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        // Set the default date to today
+        dateInput.setText(dateFormat.format(calendar.time))
+
+        dateInput.setOnClickListener {
+            showDatePickerDialog(dateInput)
+        }
+
         saveButton.setOnClickListener {
+            val selectedDate = dateInput.text.toString()
             val startTime = startTimeInput.text.toString()
             val endTime = endTimeInput.text.toString()
             val breakDuration = breakInput.text.toString().toIntOrNull() ?: 0
             val comment = commentInput.text.toString()
 
-            saveManualWorkHours(startTime, endTime, breakDuration, comment)
+            saveManualWorkHours(selectedDate, startTime, endTime, breakDuration, comment)
             dialog.dismiss()
         }
 
         dialog.show()
     }
 
+    private fun showDatePickerDialog(dateInput: EditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                dateInput.setText(dateFormat.format(calendar.time))
+            },
+            year, month, day
+        )
+        datePickerDialog.show()
+    }
+
     private fun saveManualWorkHours(
+        selectedDate: String,
         startTime: String,
         endTime: String,
         breakDuration: Int,
@@ -219,12 +252,19 @@ class WorkHoursActivity : AppCompatActivity() {
     ) {
         try {
             Log.d("WorkHoursActivity.kt", "saveManualWorkHours: try")
-            val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+            val dateOnlyFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+
+            val formattedDate = dateOnlyFormat.parse(selectedDate)
+            if (formattedDate == null) {
+                Log.d("WorkHoursActivity.kt", "saveManualWorkHours: selectedDate is null")
+                Toast.makeText(this, getString(R.string.date_invalid), Toast.LENGTH_SHORT).show()
+                return
+            }
 
             // Combining date and time
-            val startDateTime = dateTimeFormat.parse("$todayDate $startTime")
-            val endDateTime = dateTimeFormat.parse("$todayDate $endTime")
+            val startDateTime = dateFormat.parse("$selectedDate $startTime")
+            val endDateTime = dateFormat.parse("$selectedDate $endTime")
 
             if (startDateTime == null || endDateTime == null) {
                 Log.d("WorkHoursActivity.kt", "saveManualWorkHours: if == null")

@@ -15,6 +15,14 @@
         android:gravity="center">
 
         <EditText
+            android:id="@+id/dialogDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:hint="@string/workhours_date_hint"
+            android:minHeight="50dp" />
+
+        <EditText
             android:id="@+id/dialogStartTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
