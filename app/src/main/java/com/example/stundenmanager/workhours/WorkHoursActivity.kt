@@ -30,6 +30,7 @@ import com.google.firebase.Timestamp
 import java.util.Date
 import java.util.Locale
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class WorkHoursActivity : AppCompatActivity() {
 
@@ -304,6 +305,12 @@ class WorkHoursActivity : AppCompatActivity() {
         comment: String,
         hoursWorked: Double
     ) {
+        if (isWeekend(startTime)) {
+            Log.d("WorkHoursActivity.kt", "saveWorkHours: Booking not permitted at weekends")
+            Toast.makeText(this, getString(R.string.booking_weekend), Toast.LENGTH_SHORT).show()
+            return
+        }
+
         Log.d("WorkHoursActivity.kt", "saveWorkHours")
         val userId = auth.currentUser?.uid ?: return
         Log.d("WorkHoursActivity.kt", "User ID: $userId")
@@ -424,5 +431,13 @@ class WorkHoursActivity : AppCompatActivity() {
                     Log.e("WorkHoursActivity.kt", "syncOfflineData: Sync failed")
                 }
         }
+    }
+
+    private fun isWeekend(timestamp: Timestamp): Boolean {
+        val calendar = Calendar.getInstance()
+        calendar.time = timestamp.toDate()
+
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY
     }
 }

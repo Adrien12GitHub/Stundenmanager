@@ -101,4 +101,6 @@
     <string name="no_data_in_period">No data for the selected period</string>
     <string name="no_absences_in_period">No absences in the selected period.</string>
 
+    <string name="booking_weekend">Booking on weekends is not permitted!</string>
+
 </resources>
