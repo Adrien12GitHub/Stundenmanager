@@ -116,21 +116,22 @@ class StatisticsActivity : AppCompatActivity() {
                 db.collection("users")
                     .document(userId)
                     .collection("absences")
-                    .whereGreaterThanOrEqualTo("dateFrom", startDate)
-                    .whereLessThanOrEqualTo("dateTo", endDate)
+                    .whereGreaterThanOrEqualTo("dateFrom", Timestamp(startDate / 1000, 0))
+                    .whereLessThanOrEqualTo("dateTo", Timestamp(endDate / 1000, 0))
                     .get()
                     .addOnSuccessListener { absencesSnapshot ->
                         if (absencesSnapshot.isEmpty) {
                             Log.d("Firestore", "Keine Absences-Daten gefunden im Zeitraum.")
                         }
                         for (doc in absencesSnapshot.documents) {
-                            val dateFrom = doc.getDate("dateFrom")
-                            val dateTo = doc.getDate("dateTo")
+                            Log.d("Firestore", "Absence document: ${doc.data}")
+                            val dateFrom = doc.getTimestamp("dateFrom")?.toDate()
+                            val dateTo = doc.getTimestamp("dateTo")?.toDate()
                             var absenceDuration = 0.0
 
                             if (dateFrom != null && dateTo != null) {
                                 val diff = dateTo.time - dateFrom.time
-                                absenceDuration = (diff / (1000 * 60 * 60 * 24)).toDouble()  // Conversion to days
+                                absenceDuration = (diff / (1000 * 60 * 60)).toDouble()  // Conversion to hours
                             }
 
                             totalAbsenceHours += absenceDuration
