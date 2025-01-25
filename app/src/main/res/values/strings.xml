@@ -89,5 +89,10 @@
         <item>Stundenabbau</item>
         <item>Sonstiges</item>
     </string-array>
+    <string-array name="time_filter_options">
+        <item>Letzte 7 Tage</item>
+        <item>Letzter Monat</item>
+        <item>Letztes Jahr</item>
+    </string-array>
 
 </resources>
