@@ -1,5 +1,6 @@
 package com.example.stundenmanager
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -156,12 +158,16 @@ class StatisticsActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun updatePieChart(statisticsData: StatisticsData) {
 
         val entries = ArrayList<PieEntry>().apply {
-            if (statisticsData.totalWorkHours > 0) add(PieEntry(statisticsData.totalWorkHours, "Work Hours"))
-            if (statisticsData.totalAbsence > 0) add(PieEntry(statisticsData.totalAbsence, "Absences"))
-            if (statisticsData.totalBreaks > 0) add(PieEntry(statisticsData.totalBreaks, "Breaks"))
+            if (statisticsData.totalWorkHours > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalWorkHours).toDouble().toFloat(), "Work Hours"))
+            if (statisticsData.totalBreaks > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalBreaks).toDouble().toFloat(), "Breaks"))
+            if (statisticsData.totalAbsence > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalAbsence).toDouble().toFloat(), "Absences"))
         }
 
         /*
@@ -187,8 +193,14 @@ class StatisticsActivity : AppCompatActivity() {
             )
             valueTextSize = 16f
             valueTextColor = Color.BLACK
+            // Set a user-defined formatter for the values
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return String.format("%.2f h", value)
+                }
+            }
         }
-
+        // Creating the PieData and adding it to the diagram
         pieChart.data = PieData(dataSet)
         pieChart.invalidate()
     }
