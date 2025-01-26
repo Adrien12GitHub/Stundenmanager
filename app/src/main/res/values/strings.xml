@@ -92,7 +92,7 @@
         <item>Sonstiges</item>
     </string-array>
 
-    <!--  Statistics -->
+    <!--  Statistics and Reports -->
     <string-array name="time_filter_options">
         <item>Last 7 days</item>
         <item>Last month</item>
@@ -104,5 +104,21 @@
     <string name="no_absences_in_period">No absences in the selected period.</string>
 
     <string name="booking_weekend">Booking on weekends is not permitted!</string>
+
+    <string name="reports">Reports</string>
+    <string name="work_time_report">Working time report</string>
+    <string name="date">Date</string>
+    <string name="planned">Planned</string>
+    <string name="actually">Actually</string>
+    <string name="workbreak">Break</string>
+    <string name="create_report">Create report</string>
+    <string name="export_report_pdf">Export as PDF</string>
+    <string name="report_time_unknown">Unknown time period: </string>
+    <string name="export_report_pdf_saved">PDF saved under: </string>
+    <string name="export_report_pdf_err">Error during PDF export: </string>
+    <string name="report_recycle_fail">Error during loading: </string>
+    <string name="report_no_data">No data found for the selected period.</string>
+    <string name="report_no_available">No report available for export.</string>
+
 
 </resources>
