@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         // Dynamic registration of the NetworkChangeReceiver
         networkChangeReceiver = NetworkChangeReceiver()
         val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-        registerReceiver(networkChangeReceiver, intentFilter)
+        //registerReceiver(networkChangeReceiver, intentFilter)
 
         Log.d("MainActivity", "NetworkChangeReceiver dynamically registered")
 
