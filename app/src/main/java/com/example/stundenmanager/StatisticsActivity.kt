@@ -1,5 +1,6 @@
 package com.example.stundenmanager
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -80,7 +82,7 @@ class StatisticsActivity : AppCompatActivity() {
                 }
 
                 val startDate = calendar.timeInMillis
-                Log.d("Firestore", "Query period: Start = $startDate, End = $endDate")
+                Log.d("Statistics Firestore", "Query period: Start = $startDate, End = $endDate")
                 loadStatisticsFromFirestore(startDate, endDate)
             }
 
@@ -103,10 +105,10 @@ class StatisticsActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { workHoursSnapshot ->
                 if (workHoursSnapshot.isEmpty) {
-                    Log.d("Firestore", "Keine WorkHours-Daten gefunden im Zeitraum.")
+                    Log.d("Statistics Firestore", "No WorkHours data found in the period")
                 }
                 for (doc in workHoursSnapshot.documents) {
-                    Log.d("Firestore", "Document data: ${doc.data}")
+                    Log.d("Statistics Firestore", "Document data: ${doc.data}")
                     val workDuration = doc.getDouble("hoursWorked") ?: 0.0
                     val breakDurationMinutes = doc.getDouble("breakDuration") ?: 0.0
                     val breakDurationHours = breakDurationMinutes / 60  // Conversion to hours
@@ -116,27 +118,28 @@ class StatisticsActivity : AppCompatActivity() {
                 db.collection("users")
                     .document(userId)
                     .collection("absences")
-                    .whereGreaterThanOrEqualTo("dateFrom", startDate)
-                    .whereLessThanOrEqualTo("dateTo", endDate)
+                    .whereGreaterThanOrEqualTo("dateFrom", Timestamp(startDate / 1000, 0))
+                    .whereLessThanOrEqualTo("dateTo", Timestamp(endDate / 1000, 0))
                     .get()
                     .addOnSuccessListener { absencesSnapshot ->
                         if (absencesSnapshot.isEmpty) {
-                            Log.d("Firestore", "Keine Absences-Daten gefunden im Zeitraum.")
+                            Log.d("Statistics Firestore", "No absences in the selected period")
                         }
                         for (doc in absencesSnapshot.documents) {
-                            val dateFrom = doc.getDate("dateFrom")
-                            val dateTo = doc.getDate("dateTo")
+                            Log.d("Statistics Firestore", "Absence document: ${doc.data}")
+                            val dateFrom = doc.getTimestamp("dateFrom")?.toDate()
+                            val dateTo = doc.getTimestamp("dateTo")?.toDate()
                             var absenceDuration = 0.0
 
                             if (dateFrom != null && dateTo != null) {
                                 val diff = dateTo.time - dateFrom.time
-                                absenceDuration = (diff / (1000 * 60 * 60 * 24)).toDouble()  // Conversion to days
+                                absenceDuration = (diff / (1000 * 60 * 60)).toDouble()  // Conversion to hours
                             }
 
                             totalAbsenceHours += absenceDuration
                         }
                         if (totalAbsenceHours == 0.0) {
-                            Toast.makeText(this, "Keine Abwesenheiten im ausgewählten Zeitraum.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.no_absences_in_period), Toast.LENGTH_SHORT).show()
                         }
                         Log.d("Statistics Firestore Debug", "Total Work: $totalWorkHours, Absences: $totalAbsenceHours, Breaks: $totalBreaks")
                         val statisticsData = StatisticsData(
@@ -147,33 +150,29 @@ class StatisticsActivity : AppCompatActivity() {
                         updatePieChart(statisticsData)
                     }
                     .addOnFailureListener { e ->
-                        Log.e("Firestore", "Error fetching absences: ${e.message}")
+                        Log.e("Statistics Firestore", "Error fetching absences: ${e.message}")
                     }
             }
             .addOnFailureListener { e ->
-                Log.e("Firestore", "Error fetching work hours: ${e.message}")
+                Log.e("Statistics Firestore", "Error fetching work hours: ${e.message}")
             }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun updatePieChart(statisticsData: StatisticsData) {
-
         val entries = ArrayList<PieEntry>().apply {
-            if (statisticsData.totalWorkHours > 0) add(PieEntry(statisticsData.totalWorkHours, "Work Hours"))
-            if (statisticsData.totalAbsence > 0) add(PieEntry(statisticsData.totalAbsence, "Absences"))
-            if (statisticsData.totalBreaks > 0) add(PieEntry(statisticsData.totalBreaks, "Breaks"))
+            if (statisticsData.totalWorkHours > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalWorkHours).toDouble().toFloat(), "Work Hours"))
+            if (statisticsData.totalBreaks > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalBreaks).toDouble().toFloat(), "Breaks"))
+            if (statisticsData.totalAbsence > 0)
+                add(PieEntry(String.format("%.2f", statisticsData.totalAbsence).toDouble().toFloat(), "Absences"))
         }
 
-        /*
-        val entries = listOf(
-            PieEntry(8f, "Work Hours"),
-            PieEntry(2f, "Breaks"),
-            PieEntry(1f, "Absences")
-        )
-
-         */
         if (entries.isEmpty()) {
-            Toast.makeText(this, "Keine Daten verfügbar", Toast.LENGTH_SHORT).show()
-            pieChart.setNoDataText("Keine Daten für den ausgewählten Zeitraum")
+            Log.d("Statistics Firestore", "piechart entries is empty")
+            Toast.makeText(this, getString(R.string.no_data_available), Toast.LENGTH_SHORT).show()
+            pieChart.setNoDataText(getString(R.string.no_data_in_period))
             pieChart.invalidate()
             return
         }
@@ -186,8 +185,14 @@ class StatisticsActivity : AppCompatActivity() {
             )
             valueTextSize = 16f
             valueTextColor = Color.BLACK
+            // Set a user-defined formatter for the values
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return String.format("%.2f h", value)
+                }
+            }
         }
-
+        // Creating the PieData and adding it to the diagram
         pieChart.data = PieData(dataSet)
         pieChart.invalidate()
     }
@@ -198,13 +203,10 @@ class StatisticsActivity : AppCompatActivity() {
         pieChart.setUsePercentValues(true)
         pieChart.setEntryLabelTextSize(14f)
         pieChart.setEntryLabelColor(Color.BLACK)
-        pieChart.centerText = "Work Overview"
+        pieChart.centerText = getString(R.string.overview_work)
         pieChart.setCenterTextSize(20f)
     }
 
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
 }
 
 

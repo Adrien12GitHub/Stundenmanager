@@ -33,6 +33,8 @@
     <string name="loading_error">Fehler beim Laden der Daten!</string>
     <string name="tracking_started">Zeiterfassung gestartet</string>
     <string name="tracking_stopped">Zeiterfassung gestoppt</string>
+    <string name="workhours_date_hint">Date (dd/mm/yyyy)</string>
+    <string name="date_invalid">Datum ungültig</string>
 
     <string name="saved_offline">Wird offline gespeichert, bitte die App bis zur nächsten Synchronisation nicht schließen!</string>
     <string name="synced_data">Offline-Daten synchronisiert</string>
@@ -89,10 +91,18 @@
         <item>Stundenabbau</item>
         <item>Sonstiges</item>
     </string-array>
+
+    <!--  Statistics -->
     <string-array name="time_filter_options">
-        <item>Letzte 7 Tage</item>
-        <item>Letzter Monat</item>
-        <item>Letztes Jahr</item>
+        <item>Last 7 days</item>
+        <item>Last month</item>
+        <item>Last year</item>
     </string-array>
+    <string name="overview_work">Work Overview</string>
+    <string name="no_data_available">No data available</string>
+    <string name="no_data_in_period">No data for the selected period</string>
+    <string name="no_absences_in_period">No absences in the selected period.</string>
+
+    <string name="booking_weekend">Booking on weekends is not permitted!</string>
 
 </resources>
