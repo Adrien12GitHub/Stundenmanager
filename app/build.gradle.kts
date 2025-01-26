@@ -81,5 +81,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation (libs.firebase.auth.v2106)
 
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
 }
