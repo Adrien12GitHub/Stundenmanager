@@ -147,7 +147,7 @@ class StatisticsActivity : AppCompatActivity() {
                             totalAbsenceHours.toFloat(),
                             totalBreaks.toFloat()
                         )
-                        updatePieChart(StatisticsData(2.00f, 2.00f, 2.00f))
+                        updatePieChart(statisticsData)
                     }
                     .addOnFailureListener { e ->
                         Log.e("Statistics Firestore", "Error fetching absences: ${e.message}")
@@ -162,14 +162,11 @@ class StatisticsActivity : AppCompatActivity() {
     private fun updatePieChart(statisticsData: StatisticsData) {
         val entries = ArrayList<PieEntry>().apply {
             if (statisticsData.totalWorkHours > 0)
-                //add(PieEntry(String.format("%.2f", statisticsData.totalWorkHours).toDouble().toFloat(), "Work Hours"))
-                add(PieEntry(formatToFloat(statisticsData.totalWorkHours), "Work Hours"))
+                add(PieEntry(String.format("%.2f", statisticsData.totalWorkHours).replace(",", ".").toFloat(), "Work Hours"))
             if (statisticsData.totalBreaks > 0)
-                //add(PieEntry(String.format("%.2f", statisticsData.totalBreaks).toDouble().toFloat(), "Breaks"))
-                add(PieEntry(formatToFloat(statisticsData.totalBreaks), "Breaks"))
+                add(PieEntry(String.format("%.2f", statisticsData.totalBreaks).replace(",", ".").toFloat(), "Breaks"))
             if (statisticsData.totalAbsence > 0)
-                //add(PieEntry(String.format("%.2f", statisticsData.totalAbsence).toDouble().toFloat(), "Absences"))
-                add(PieEntry(formatToFloat(statisticsData.totalAbsence), "Absences"))
+                add(PieEntry(String.format("%.2f", statisticsData.totalAbsence).replace(",", ".").toFloat(), "Absences"))
         }
 
         if (entries.isEmpty()) {
@@ -198,11 +195,6 @@ class StatisticsActivity : AppCompatActivity() {
         // Creating the PieData and adding it to the diagram
         pieChart.data = PieData(dataSet)
         pieChart.invalidate()
-    }
-
-    @SuppressLint("DefaultLocale")
-    private fun formatToFloat(value: Float): Float {
-        return String.format("%.2f", value).replace(",", ".").toFloat()
     }
 
     private fun setupPieChart() {
