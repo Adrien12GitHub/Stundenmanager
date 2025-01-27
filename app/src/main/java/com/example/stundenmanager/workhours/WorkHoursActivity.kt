@@ -255,6 +255,7 @@ class WorkHoursActivity : AppCompatActivity() {
             val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
             val dateOnlyFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
+            val currentDate = Date()
             val formattedDate = dateOnlyFormat.parse(selectedDate)
             if (formattedDate == null) {
                 Log.d("WorkHoursActivity.kt", "saveManualWorkHours: selectedDate is null")
@@ -272,9 +273,9 @@ class WorkHoursActivity : AppCompatActivity() {
                 return
             }
 
-            // Check: Start time must not be after the end time
-            if (startDateTime.after(endDateTime)) {
-                Log.d("WorkHoursActivity.kt", "saveManualWorkHours: start after endtime")
+            // Check: Date and time must not be in the future
+            if (startDateTime.after(currentDate) || endDateTime.after(currentDate)) {
+                Log.d("WorkHoursActivity.kt", "saveManualWorkHours: date or time in future")
                 Toast.makeText(this, getString(R.string.start_end_error), Toast.LENGTH_SHORT).show()
                 return
             }
@@ -426,27 +427,6 @@ class WorkHoursActivity : AppCompatActivity() {
             }
     }
 
-    private fun setupMenuNavigation() {
-        findViewById<ImageButton>(R.id.menu_home).setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
-        }
-        findViewById<ImageButton>(R.id.menu_workhours).setOnClickListener {
-            Toast.makeText(this, "Du bist bereits auf der Arbeitszeiten-Seite", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<ImageButton>(R.id.menu_absences).setOnClickListener {
-            startActivity(Intent(this, AbsencesActivity::class.java))
-        }
-        findViewById<ImageButton>(R.id.menu_messages).setOnClickListener {
-            startActivity(Intent(this, MessagesActivity::class.java))
-        }
-        findViewById<ImageButton>(R.id.menu_reports).setOnClickListener {
-            startActivity(Intent(this, ReportsActivity::class.java))
-        }
-        findViewById<ImageButton>(R.id.menu_statistics).setOnClickListener {
-            startActivity(Intent(this, StatisticsActivity::class.java))
-        }
-    }
-
     fun syncOfflineData() {
         Log.d("WorkHoursActivity.kt", "syncOfflineData")
         if (!NetworkUtils.isConnected(this)) return // If offline, do nothing
@@ -480,4 +460,26 @@ class WorkHoursActivity : AppCompatActivity() {
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY
     }
+
+    private fun setupMenuNavigation() {
+        findViewById<ImageButton>(R.id.menu_home).setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_workhours).setOnClickListener {
+            Toast.makeText(this, "Du bist bereits auf der Arbeitszeiten-Seite", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<ImageButton>(R.id.menu_absences).setOnClickListener {
+            startActivity(Intent(this, AbsencesActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_messages).setOnClickListener {
+            startActivity(Intent(this, MessagesActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_reports).setOnClickListener {
+            startActivity(Intent(this, ReportsActivity::class.java))
+        }
+        findViewById<ImageButton>(R.id.menu_statistics).setOnClickListener {
+            startActivity(Intent(this, StatisticsActivity::class.java))
+        }
+    }
 }
+

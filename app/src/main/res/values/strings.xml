@@ -25,7 +25,7 @@
     <string name="start_tracking">Tracking gestartet!</string>
     <string name="start_tracking_error">Fehler beim Starten des Trackings!</string>
     <string name="time_invalid">Ungültige Zeitangabe! Bitte HH:mm verwenden.</string>
-    <string name="start_end_error">Startzeit kann nicht nach der Endzeit liegen!</string>
+    <string name="start_end_error">Das Datum bzw. die Uhrzeit darf nicht in der Zukunft liegen!</string>
     <string name="hours_negative">Gearbeitete Stunden können nicht negativ sein!</string>
     <string name="calc_error">Fehler bei der Zeitberechnung:</string>
     <string name="time_saved">Arbeitszeit gespeichert!</string>
