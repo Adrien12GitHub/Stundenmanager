@@ -35,6 +35,13 @@ jobs:
       - name: 📦 Generate APK
         run: ./gradlew assembleRelease
 
+      - name: 🔍 Check if APK exists
+        run: ls -R app/build/outputs/apk/
+
+      - name: 🔎 Show Gradle build logs (if error)
+        if: failure()
+        run: cat app/build/reports/build.log
+
       - name: 🚀 Upload APK
         uses: actions/upload-artifact@v3
         with:
@@ -47,6 +54,4 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: testers
-          file: app/build/outputs/apk/release/app-release.apk
-
-
+          file: app/build/outputs/apk/debug/app-debug.apk #app/build/outputs/apk/release/app-release.apk
