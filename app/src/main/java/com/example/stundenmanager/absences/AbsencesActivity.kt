@@ -1,5 +1,6 @@
 package com.example.stundenmanager.absences
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
@@ -22,6 +23,7 @@ import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class AbsencesActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -33,6 +35,7 @@ class AbsencesActivity : AppCompatActivity() {
     private lateinit var selectedFileUri: Uri
     private lateinit var filePreview: TextView
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_absences)
@@ -65,11 +68,17 @@ class AbsencesActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             if (validateForm()) {
                 val reason = reasonSpinner.selectedItem.toString()
-                val dateFrom = Timestamp(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(editTextDateFrom.text.toString()))
-                val dateTo = Timestamp(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(editTextDateTo.text.toString()))
+                val dateFrom = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(editTextDateFrom.text.toString())
+                    ?.let { it1 -> Timestamp(it1) }
+                val dateTo = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(editTextDateTo.text.toString())
+                    ?.let { it1 -> Timestamp(it1) }
                 val file = selectedFileUri
 
-                checkForOverlappingAbsences(reason, dateFrom, dateTo, file)
+                if (dateFrom != null) {
+                    if (dateTo != null) {
+                        checkForOverlappingAbsences(reason, dateFrom, dateTo, file)
+                    }
+                }
 
                 // clear the form
                 reasonSpinner.setSelection(0)
@@ -99,14 +108,25 @@ class AbsencesActivity : AppCompatActivity() {
         try {
             val dateFrom = sdf.parse(editTextDateFrom.text.toString())
             val dateTo = sdf.parse(editTextDateTo.text.toString())
+            val selectedReason = reasonSpinner.selectedItem.toString()
 
-            if (dateFrom.before(currentDate) || dateTo.before(currentDate)) {
-                Toast.makeText(this, "Datum darf nicht in der Vergangenheit liegen", Toast.LENGTH_SHORT).show()
-                return false
+            // Allows entry of past date for unforeseeable events (Illness & other)
+            if (selectedReason != "Krankheit" && selectedReason != "Sonstiges") {
+                if (dateTo != null) {
+                    if (dateFrom != null) {
+                        if (dateFrom.before(currentDate) || dateTo.before(currentDate)) {
+                            Toast.makeText(this, "Datum darf nicht in der Vergangenheit liegen", Toast.LENGTH_SHORT).show()
+                            return false
+                        }
+                    }
+                }
             }
-            if (dateFrom.after(dateTo)) {
-                Toast.makeText(this, "Enddatum darf nicht vor dem Startdatum liegen", Toast.LENGTH_SHORT).show()
-                return false
+
+            if (dateFrom != null) {
+                if (dateFrom.after(dateTo)) {
+                    Toast.makeText(this, "Enddatum darf nicht vor dem Startdatum liegen", Toast.LENGTH_SHORT).show()
+                    return false
+                }
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Ungültiges Datum", Toast.LENGTH_SHORT).show()
@@ -135,6 +155,8 @@ class AbsencesActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK) {
