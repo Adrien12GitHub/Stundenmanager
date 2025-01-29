@@ -12,8 +12,14 @@ android {
         applicationId = "com.example.stundenmanager"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        //versionCode = 1
+        // Read versionCode from a file version.txt
+        val versionCodeFile = file("version.txt")
+        versionCode = versionCodeFile.readText().trim().toInt()
+        // Manual versioning
+        //versionName = "0.1"
+        // Generate versionName based on versionCode (z. B. 0.1, 0.2, 0.3)
+        versionName = "0.${versionCode}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
