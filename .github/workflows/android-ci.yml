@@ -25,6 +25,16 @@ jobs:
           
       - name: 🔑 Make Gradlew executable
         run: chmod +x gradlew
+
+      # 🔢 Increase versionCode automatically
+      - name: 🔢 Auto-Increment versionCode
+        run: |
+          VERSION_CODE=$(cat app/version.txt)
+          NEW_VERSION_CODE=$((VERSION_CODE + 1))
+          echo $NEW_VERSION_CODE > app/version.txt
+          echo "VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
+          echo "VERSION_NAME=0.$NEW_VERSION_CODE" >> $GITHUB_ENV
+
         
       - name: 🛠️ Create the project (Gradle)
         run: ./gradlew assembleDebug
@@ -34,10 +44,6 @@ jobs:
 
       - name: 📦 Generate APK
         run: ./gradlew assembleRelease
-
-       # 📖 Read the version from the build.gradle.kts file
-      - name: 📖 Read version number
-        run: echo "VERSION_NAME=$(grep versionName app/build.gradle.kts | awk '{print $2}' | tr -d '\"')" >> $GITHUB_ENV
 
       - name: 🔍 Check if APK exists
         run: ls -R app/build/outputs/apk/
@@ -61,7 +67,7 @@ jobs:
           file: app/build/outputs/apk/debug/app-debug.apk #app/build/outputs/apk/release/app-release.apk
           releaseNotes: "Build $VERSION_NAME - Automatically uploaded by CI/CD"
 
-      - name: 🔄 Push neues versionCode zu GitHub
+      - name: 🔄 Push new versionCode to GitHub
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
