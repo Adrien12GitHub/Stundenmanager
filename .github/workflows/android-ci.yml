@@ -35,6 +35,10 @@ jobs:
       - name: 📦 Generate APK
         run: ./gradlew assembleRelease
 
+       # 📖 Read the version from the build.gradle.kts file
+      - name: 📖 Read version number
+        run: echo "VERSION_NAME=$(grep versionName app/build.gradle.kts | awk '{print $2}' | tr -d '\"')" >> $GITHUB_ENV
+
       - name: 🔍 Check if APK exists
         run: ls -R app/build/outputs/apk/
 
@@ -55,3 +59,12 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk #app/build/outputs/apk/release/app-release.apk
+          releaseNotes: "Build $VERSION_NAME - Automatically uploaded by CI/CD"
+
+      - name: 🔄 Push neues versionCode zu GitHub
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add app/version.txt
+          git commit -m "Auto-increment versionCode to $VERSION_CODE"
+          git push || echo "No push necessary"
