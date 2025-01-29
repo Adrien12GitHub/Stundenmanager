@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
+@Suppress("DEPRECATION")
 class MessagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,7 @@ class MessagesActivity : AppCompatActivity() {
 
             fetchUserShift(userId) { initialShift ->
                 Log.d("MessagesActivity", "Fetched initial shift: $initialShift")
-                val shifts = assignShiftsForUser(userId, users, initialShift)
+                val shifts = assignShiftsForUser(userId, initialShift)
                 Log.d("MessagesActivity", "Assigned shifts: $shifts")
                 val recyclerView: RecyclerView = findViewById(R.id.rvShifts)
                 recyclerView.layoutManager = LinearLayoutManager(this)
@@ -70,7 +71,7 @@ class MessagesActivity : AppCompatActivity() {
             }
     }
 
-    private fun assignShiftsForUser(userId: String, users: List<String>, initialShift: String): List<Shift> {
+    private fun assignShiftsForUser(userId: String, initialShift: String): List<Shift> {
         val shifts = mutableListOf<Shift>()
         val calendar = Calendar.getInstance()
 
@@ -84,7 +85,7 @@ class MessagesActivity : AppCompatActivity() {
         val isEarlyShiftThisWeek = (initialShift == "morning")
 
         // Shifts for Monday to Friday
-        var dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         if (dayOfWeek != Calendar.MONDAY) {
             // Set to Monday of the current week
             calendar.add(Calendar.DAY_OF_MONTH, Calendar.MONDAY - dayOfWeek)
