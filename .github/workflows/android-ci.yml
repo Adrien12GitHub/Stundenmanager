@@ -39,13 +39,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-release
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/**/*.apk
 
       - name: 🔥 Firebase App Distribution Upload
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsJson: ${{ secrets.FIREBASE_CREDENTIALS }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: testers
           file: app/build/outputs/apk/release/app-release.apk
+
 
