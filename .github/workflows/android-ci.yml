@@ -22,7 +22,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
+          
+      - name: 🔑 Make Gradlew executable
+        run: chmod +x gradlew
+        
       - name: 🛠️ Create the project (Gradle)
         run: ./gradlew assembleDebug
 
