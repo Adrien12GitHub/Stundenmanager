@@ -65,7 +65,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk #app/build/outputs/apk/release/app-release.apk
-          releaseNotes: "Build $VERSION_NAME - Automatically uploaded by CI/CD"
+          releaseNotes: "Build ${{ env.VERSION_NAME }} - Automatically uploaded by CI/CD"
 
       - name: 🔄 Push new versionCode to GitHub
         run: |
