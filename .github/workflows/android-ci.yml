@@ -43,7 +43,7 @@ jobs:
         run: cat app/build/reports/build.log
 
       - name: 🚀 Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: app/build/outputs/apk/**/*.apk
