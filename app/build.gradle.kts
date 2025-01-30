@@ -13,13 +13,19 @@ android {
         minSdk = 24
         targetSdk = 34
         //versionCode = 1
-        // Read versionCode from a file version.txt
+        //versionName = "1.0" // Manual versioning
+
+        // Read versionCode from GitHub Actions ENV, if available, otherwise from file
+        val versionCodeEnv = System.getenv("VERSION_CODE")?.toIntOrNull()
         val versionCodeFile = file("version.txt")
-        versionCode = versionCodeFile.readText().trim().toInt()
-        // Manual versioning
-        //versionName = "0.1"
-        // Generate versionName based on versionCode (z. B. 0.1, 0.2, 0.3)
-        versionName = "0.${versionCode}"
+        val versionCode = versionCodeEnv ?: versionCodeFile.readText().trim().toInt()
+
+        this.versionCode = versionCode
+
+        // Generate version name automatically from versionCode
+        val versionNameEnv = System.getenv("VERSION_NAME")
+        val versionName = versionNameEnv ?: "0.$versionCode"
+        this.versionName = versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
