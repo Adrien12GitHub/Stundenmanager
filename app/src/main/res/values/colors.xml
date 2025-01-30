@@ -9,4 +9,15 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="grey_light">#FF777777</color>
+
+    <color name="default_icon_color">#888888</color> <!-- inactive Icons -->
+    <color name="active_icon_color">#FF5722</color> <!-- active Icon -->
+
+    <color name="cardview_color_light">#EEEEEE</color> <!-- Cardview & co light -->
+    <color name="cardview_color_dark">#333333</color> <!-- Cardview & co dark -->
+
+    <color name="piechart_color_1">#FF5722</color> <!-- PieChart 1 -->
+    <color name="piechart_color_2">#03A9F4</color> <!-- PieChart 2 -->
+    <color name="piechart_color_3">#8BC34A</color> <!-- PieChart 3 -->
+
 </resources>

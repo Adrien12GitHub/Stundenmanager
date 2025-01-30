@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stundenmanager.absences.AbsencesActivity
 import com.example.stundenmanager.HomeActivity
+import com.example.stundenmanager.MainActivity
 import com.example.stundenmanager.MessagesActivity
 import com.example.stundenmanager.NetworkUtils
 import com.example.stundenmanager.OfflineDataStore
@@ -28,6 +29,7 @@ import com.example.stundenmanager.StatisticsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.Timestamp
+import java.text.ParseException
 import java.util.Date
 import java.util.Locale
 import java.text.SimpleDateFormat
@@ -49,6 +51,10 @@ class WorkHoursActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_workhours)
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -256,10 +262,23 @@ class WorkHoursActivity : AppCompatActivity() {
             val dateOnlyFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
             val currentDate = Date()
+
+            if (!isValidDate(selectedDate)) {
+                Log.d("WorkHoursActivity.kt", "saveManualWorkHours: Invalid date")
+                Toast.makeText(this, getString(R.string.date_invalid), Toast.LENGTH_SHORT).show()
+                return
+            }
+
             val formattedDate = dateOnlyFormat.parse(selectedDate)
             if (formattedDate == null) {
                 Log.d("WorkHoursActivity.kt", "saveManualWorkHours: selectedDate is null")
                 Toast.makeText(this, getString(R.string.date_invalid), Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            if (!isStartTimeBeforeEndTime(startTime, endTime)) {
+                Log.d("WorkHoursActivity.kt", "saveManualWorkHours: Startzeit später als Endzeit!")
+                Toast.makeText(this, getString(R.string.start_end_error), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -273,6 +292,21 @@ class WorkHoursActivity : AppCompatActivity() {
                 return
             }
 
+            try {
+                // Combining date and time
+                val startTimeParsed = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(startTime)
+                val endTimeParsed = SimpleDateFormat("HH:mm", Locale.getDefault()).parse(endTime)
+
+                if (startTimeParsed == null || endTimeParsed == null) {
+                    Log.d("WorkHoursActivity.kt", "saveManualWorkHours: if == null")
+                    throw IllegalArgumentException(getString(R.string.time_invalid))
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, getString(R.string.time_invalid), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.input_incorrect) + e.message, Toast.LENGTH_SHORT).show()
+                return
+            }
+
             // Check: Date and time must not be in the future
             if (startDateTime.after(currentDate) || endDateTime.after(currentDate)) {
                 Log.d("WorkHoursActivity.kt", "saveManualWorkHours: date or time in future")
@@ -282,7 +316,7 @@ class WorkHoursActivity : AppCompatActivity() {
 
             // Calculation of hours worked (milliseconds -> hours)
             val workedMillis = endDateTime.time - startDateTime.time
-            val workedHours = (workedMillis / (1000 * 60 * 60)).toDouble() - (breakDuration / 60.0)
+            val workedHours = workedMillis.toDouble() / (1000 * 60 * 60) - breakDuration.toDouble() / 60.0
 
             if (workedHours < 0) {
                 Log.d("WorkHoursActivity.kt", "saveManualWorkHours: workedHours < 0")
@@ -315,6 +349,33 @@ class WorkHoursActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.calc_error) + {e.message}, Toast.LENGTH_SHORT).show()
         }
         fetchWorkHours()
+    }
+
+    fun isValidDate(dateString: String): Boolean {
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        dateFormat.isLenient = false // WICHTIG: Strikte Prüfung, kein automatisches Anpassen
+
+        return try {
+            dateFormat.parse(dateString) != null // Prüfen, ob das Datum gültig geparst werden kann
+        } catch (e: ParseException) {
+            false // Falls Parsing fehlschlägt, ist das Datum ungültig
+        }
+    }
+
+    fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        return try {
+            val start = timeFormat.parse(startTime)
+            val end = timeFormat.parse(endTime)
+
+            if (start != null && end != null) {
+                return start.before(end) // Start muss vor Endzeit sein
+            }
+            false
+        } catch (e: ParseException) {
+            false
+        }
     }
 
     private fun checkForOverlappingWorkHours(startTime: Timestamp, endTime: Timestamp, callback: (Boolean) -> Unit) {
@@ -427,32 +488,6 @@ class WorkHoursActivity : AppCompatActivity() {
             }
     }
 
-    fun syncOfflineData() {
-        Log.d("WorkHoursActivity.kt", "syncOfflineData")
-        if (!NetworkUtils.isConnected(this)) return // If offline, do nothing
-
-        val userId = auth.currentUser?.uid ?: return
-        val unsyncedWorkHours = OfflineDataStore.getUnsyncedWorkHours()
-        if (unsyncedWorkHours.isEmpty()) {
-            Log.d("WorkHoursActivity.kt", "No offline data to sync")
-            return
-        }
-
-        val firestore = FirebaseFirestore.getInstance()
-        unsyncedWorkHours.forEach { workHour ->
-            firestore.collection("users").document(userId).collection("workHours")
-                .add(workHour.toHashMap())
-                .addOnSuccessListener {
-                    Log.d("WorkHoursActivity.kt", "syncOfflineData: Synced successfully")
-                    OfflineDataStore.clearSyncedWorkHours() // Delete successfully synchronised data
-                    Toast.makeText(this, getString(R.string.synced_data), Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Log.e("WorkHoursActivity.kt", "syncOfflineData: Sync failed")
-                }
-        }
-    }
-
     private fun isWeekend(timestamp: Timestamp): Boolean {
         val calendar = Calendar.getInstance()
         calendar.time = timestamp.toDate()
@@ -482,4 +517,3 @@ class WorkHoursActivity : AppCompatActivity() {
         }
     }
 }
-

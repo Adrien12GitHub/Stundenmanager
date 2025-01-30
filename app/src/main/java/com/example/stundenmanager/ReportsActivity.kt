@@ -37,6 +37,10 @@ class ReportsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_reports)
+
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_reports)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -63,7 +67,8 @@ class ReportsActivity : AppCompatActivity() {
             if (adapter != null && adapter.itemCount > 0) {
                 exportReportToPDF(adapter.getReportData())
             } else {
-                Toast.makeText(this, getString(R.string.report_no_available), Toast.LENGTH_SHORT).show()
+                Log.d("ReportsActivity.kt", "No report available for export.")
+                Toast.makeText(this, getString(R.string.report_no_available_export), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -90,10 +95,11 @@ class ReportsActivity : AppCompatActivity() {
                         .get()
                         .addOnSuccessListener { querySnapshot ->
                             if (querySnapshot.isEmpty) {
+                                Log.d("ReportsActivity.kt", "No data found for the selected period.")
                                 Toast.makeText(this, getString(R.string.report_no_data), Toast.LENGTH_SHORT).show()
                                 return@addOnSuccessListener
                             }
-                            Log.d("ReportsActivity", "Geladene Einträge: ${querySnapshot.size()}")
+                            Log.d("ReportsActivity", "Loaded entries: ${querySnapshot.size()}")
 
                             val reportItems = mutableListOf<ReportItem>()
 

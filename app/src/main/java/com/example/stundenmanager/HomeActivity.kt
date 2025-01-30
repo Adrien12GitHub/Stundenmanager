@@ -1,6 +1,5 @@
 package com.example.stundenmanager
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +20,9 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_home)
+
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val email = user?.email
@@ -29,10 +31,13 @@ class HomeActivity : AppCompatActivity() {
         val welcomeTextView: TextView = findViewById(R.id.welcomeTextView)
         welcomeTextView.text = "Willkommen, $username!"
 
-        // wenn user clicks on logout button
+        // when user clicks on logout button
         logoutButton.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, MainActivity::class.java))
+            FirebaseAuth.getInstance().signOut()
+            // Empty backstack after logout
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
             finish()
         }
 

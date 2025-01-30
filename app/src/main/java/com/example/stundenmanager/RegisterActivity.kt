@@ -1,6 +1,7 @@
 package com.example.stundenmanager
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -38,14 +39,19 @@ class RegisterActivity : AppCompatActivity() {
                         )
                         firestore.collection("users").document(userId).set(user)
                             .addOnSuccessListener {
+                                Log.d("RegisterActivity", "registerUser: SuccessListener")
+                                Toast.makeText(baseContext, getString(R.string.register_success),
+                                    Toast.LENGTH_SHORT).show()
                                 finish() // Registration successful
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(baseContext, "Error saving user: ${e.message}",
+                                Log.e("RegisterActivity", "registerUser: FailureListener: ${e.message}")
+                                Toast.makeText(baseContext, getString(R.string.register_error) + e.message ,
                                     Toast.LENGTH_SHORT).show()
                             }
                     }
                 } else {
+                    Log.d("RegisterActivity", "registerUser: Registration failed")
                     // If registration fails, display a message to the user.
                     Toast.makeText(baseContext, "Registration failed: ${task.exception?.message}",
                         Toast.LENGTH_SHORT).show()

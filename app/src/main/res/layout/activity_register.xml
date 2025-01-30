@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/register"
         android:textSize="24sp"
+        android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="16dp"/>
 

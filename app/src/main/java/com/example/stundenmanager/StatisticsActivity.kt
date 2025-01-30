@@ -40,6 +40,9 @@ class StatisticsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistics)
 
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_statistics)
+
         pieChart = findViewById(R.id.pieChart)
         setupPieChart()
         setupMenuNavigation()
@@ -106,6 +109,7 @@ class StatisticsActivity : AppCompatActivity() {
             .addOnSuccessListener { workHoursSnapshot ->
                 if (workHoursSnapshot.isEmpty) {
                     Log.d("Statistics Firestore", "No WorkHours data found in the period")
+                    Toast.makeText(this, getString(R.string.no_workhours_in_period), Toast.LENGTH_SHORT).show()
                 }
                 for (doc in workHoursSnapshot.documents) {
                     Log.d("Statistics Firestore", "Document data: ${doc.data}")
@@ -133,7 +137,9 @@ class StatisticsActivity : AppCompatActivity() {
 
                             if (dateFrom != null && dateTo != null) {
                                 val diff = dateTo.time - dateFrom.time
-                                absenceDuration = (diff / (1000 * 60 * 60)).toDouble()  // Conversion to hours
+                                val diffInDays = (diff / (1000 * 60 * 60 * 24)).toInt() + 1 // Calculation of days
+
+                                absenceDuration = diffInDays * 8.0 // Every day counts only 8 hours
                             }
 
                             totalAbsenceHours += absenceDuration
@@ -158,7 +164,7 @@ class StatisticsActivity : AppCompatActivity() {
             }
     }
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint("DefaultLocale", "ResourceType")
     private fun updatePieChart(statisticsData: StatisticsData) {
         val entries = ArrayList<PieEntry>().apply {
             if (statisticsData.totalWorkHours > 0)
@@ -179,9 +185,9 @@ class StatisticsActivity : AppCompatActivity() {
 
         val dataSet = PieDataSet(entries, "Statistics").apply {
             colors = listOf(
-                Color.parseColor("#FF5722"), // Work Hours
-                Color.parseColor("#03A9F4"), // Absences
-                Color.parseColor("#8BC34A")  // Breaks
+                Color.parseColor(getString(R.color.piechart_color_1)), // Work Hours
+                Color.parseColor(getString(R.color.piechart_color_2)), // Absences
+                Color.parseColor(getString(R.color.piechart_color_3))  // Breaks
             )
             valueTextSize = 16f
             valueTextColor = Color.BLACK
@@ -202,7 +208,7 @@ class StatisticsActivity : AppCompatActivity() {
         pieChart.isRotationEnabled = true
         pieChart.setUsePercentValues(true)
         pieChart.setEntryLabelTextSize(14f)
-        pieChart.setEntryLabelColor(Color.BLACK)
+        //pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.centerText = getString(R.string.overview_work)
         pieChart.setCenterTextSize(20f)
     }

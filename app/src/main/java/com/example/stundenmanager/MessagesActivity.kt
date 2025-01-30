@@ -20,6 +20,9 @@ class MessagesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messages)
 
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_messages)
+
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userId = currentUser?.uid ?: return
 

@@ -3,5 +3,7 @@
     <style name="Base.Theme.Stundenmanager" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorSurface">@color/cardview_color_dark</item>
+        <item name="colorOnSurface">@color/white</item>
     </style>
 </resources>

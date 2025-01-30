@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stundenmanager.HomeActivity
+import com.example.stundenmanager.MainActivity
 import com.example.stundenmanager.MessagesActivity
 import com.example.stundenmanager.NetworkUtils
 import com.example.stundenmanager.R
@@ -39,6 +40,9 @@ class AbsencesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_absences)
+
+        // highlight menuIcon
+        MainActivity.highlightActiveMenu(this, R.id.menu_absences)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()

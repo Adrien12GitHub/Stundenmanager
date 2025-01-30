@@ -6,6 +6,8 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <string name="input_incorrect">Incorrect input:</string>
+
     <!-- Work Hours -->
     <string name="my_workhours">Meine Arbeitszeiten</string>
     <string name="tracking_notification_content">Tracking läuft...</string>
@@ -24,7 +26,7 @@
     <string name="auto_start">Automatisch gestartet</string>
     <string name="start_tracking">Tracking gestartet!</string>
     <string name="start_tracking_error">Fehler beim Starten des Trackings!</string>
-    <string name="time_invalid">Ungültige Zeitangabe! Bitte HH:mm verwenden.</string>
+    <string name="time_invalid">Ungültige Zeitformatierung!</string>
     <string name="start_end_error">Das Datum bzw. die Uhrzeit darf nicht in der Zukunft liegen!</string>
     <string name="hours_negative">Gearbeitete Stunden können nicht negativ sein!</string>
     <string name="calc_error">Fehler bei der Zeitberechnung:</string>
@@ -33,12 +35,14 @@
     <string name="loading_error">Fehler beim Laden der Daten!</string>
     <string name="tracking_started">Zeiterfassung gestartet</string>
     <string name="tracking_stopped">Zeiterfassung gestoppt</string>
-    <string name="workhours_date_hint">Date (dd/mm/yyyy)</string>
+    <string name="workhours_date_hint">Date (dd.mm.yyyy)</string>
     <string name="date_invalid">Datum ungültig</string>
 
     <string name="saved_offline">Wird offline gespeichert, bitte die App bis zur nächsten Synchronisation nicht schließen!</string>
     <string name="synced_data">Offline-Daten synchronisiert</string>
 
+    <string name="register_success">Save user successfully; please log in.</string>
+    <string name="register_error">Error saving user: </string>
 
     <string name="Login">Login</string>
     <string name="Email">Email</string>
@@ -65,6 +69,7 @@
     <string name="overview_work">Work Overview</string>
     <string name="no_data_available">No data available</string>
     <string name="no_data_in_period">No data for the selected period</string>
+    <string name="no_workhours_in_period">No workhours in the selected period.</string>
     <string name="no_absences_in_period">No absences in the selected period.</string>
 
     <string name="booking_weekend">Booking on weekends is not permitted!</string>
@@ -82,7 +87,6 @@
     <string name="export_report_pdf_err">Error during PDF export: </string>
     <string name="report_recycle_fail">Error during loading: </string>
     <string name="report_no_data">No data found for the selected period.</string>
-    <string name="report_no_available">No report available for export.</string>
-
+    <string name="report_no_available_export">No report available for export.</string>
 
 </resources>

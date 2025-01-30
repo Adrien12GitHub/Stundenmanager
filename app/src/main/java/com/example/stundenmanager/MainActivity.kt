@@ -1,11 +1,14 @@
 package com.example.stundenmanager
 
+import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +46,31 @@ class MainActivity : ComponentActivity() {
 
         registerButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    companion object {
+        fun highlightActiveMenu(activity: Activity, menuItemId: Int) {
+            val home = activity.findViewById<ImageButton>(R.id.menu_home)
+            val workhours = activity.findViewById<ImageButton>(R.id.menu_workhours)
+            val absences = activity.findViewById<ImageButton>(R.id.menu_absences)
+            val messages = activity.findViewById<ImageButton>(R.id.menu_messages)
+            val reports = activity.findViewById<ImageButton>(R.id.menu_reports)
+            val statistics = activity.findViewById<ImageButton>(R.id.menu_statistics)
+
+            // Set default colour for all icons
+            val defaultColor = ContextCompat.getColor(activity, R.color.default_icon_color)
+            val activeColor = ContextCompat.getColor(activity, R.color.active_icon_color)
+
+            home.setColorFilter(defaultColor)
+            workhours.setColorFilter(defaultColor)
+            absences.setColorFilter(defaultColor)
+            messages.setColorFilter(defaultColor)
+            reports.setColorFilter(defaultColor)
+            statistics.setColorFilter(defaultColor)
+
+            // Highlight active menu item
+            activity.findViewById<ImageButton>(menuItemId).setColorFilter(activeColor)
         }
     }
 }

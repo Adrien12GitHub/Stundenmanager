@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="@string/planned"/>
+            android:text="@string/planned" />
 
         <TextView
             android:id="@+id/txtActual"
