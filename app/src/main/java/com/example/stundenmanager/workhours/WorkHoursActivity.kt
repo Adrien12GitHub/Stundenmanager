@@ -358,9 +358,25 @@ class WorkHoursActivity : AppCompatActivity() {
         dateFormat.isLenient = false // IMPORTANT: Strict check, no automatic adjustment
 
         return try {
-            val parsedDate = dateFormat.parse(dateString)
-            parsedDate != null && parsedDate.before(Date()) // Date must be valid and before the current date
+            val parsedDate = dateFormat.parse(dateString) ?: return false
+            val calendar = Calendar.getInstance()
+            val currentYear = calendar.get(Calendar.YEAR)
+
+            // Get the year of the entered date
+            calendar.time = parsedDate
+            val enteredYear = calendar.get(Calendar.YEAR)
+
+            // Check whether the date is within the permitted range
+            return if (enteredYear in (currentYear - 1)..currentYear) {
+                true
+            } else {
+                Log.e("WorkHoursActivity", "Invalid year: $enteredYear. Only ${currentYear - 1} or $currentYear allowed!")
+                Toast.makeText(this, "Error: Only the current or the last year are allowed!", Toast.LENGTH_LONG).show()
+                false
+            }
         } catch (e: ParseException) {
+            Log.e("WorkHoursActivity", "Incorrect date specification: $dateString")
+            Toast.makeText(this,"Invalid date. Please use valid format (DD.MM.YYYY)!", Toast.LENGTH_LONG).show()
             false
         }
     }
