@@ -67,9 +67,11 @@ jobs:
           releaseNotes: "Build ${{ env.VERSION_NAME }} - Automatically uploaded by CI/CD"
 
       - name: 🔄 Push new versionCode to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add app/version.txt
-          git commit -m "Auto-increment versionCode to $VERSION_CODE"
-          git push || echo "No push necessary"
+          git commit -m "Auto-increment versionCode to $VERSION_CODE" || echo "No changes to commit"
+          git push origin HEAD:main
