@@ -66,9 +66,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git
-          git pull origin main --rebase
           git add app/version.txt
           git commit -m "Auto-increment versionCode to $VERSION_CODE" || echo "No changes to commit"
+          git pull --rebase origin main || echo "No rebase needed"
           git push origin HEAD:main
 
       - name: 🔥 Firebase App Distribution Upload
