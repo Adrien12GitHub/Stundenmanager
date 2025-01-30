@@ -351,28 +351,24 @@ class WorkHoursActivity : AppCompatActivity() {
         fetchWorkHours()
     }
 
-    fun isValidDate(dateString: String): Boolean {
+    private fun isValidDate(dateString: String): Boolean {
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        dateFormat.isLenient = false // WICHTIG: Strikte Prüfung, kein automatisches Anpassen
+        dateFormat.isLenient = false // IMPORTANT: Strict check, no automatic adjustment
 
         return try {
-            dateFormat.parse(dateString) != null // Prüfen, ob das Datum gültig geparst werden kann
+            val parsedDate = dateFormat.parse(dateString)
+            parsedDate != null && parsedDate.before(Date()) // Date must be valid and before the current date
         } catch (e: ParseException) {
-            false // Falls Parsing fehlschlägt, ist das Datum ungültig
+            false
         }
     }
 
-    fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
+    private fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
         return try {
             val start = timeFormat.parse(startTime)
             val end = timeFormat.parse(endTime)
-
-            if (start != null && end != null) {
-                return start.before(end) // Start muss vor Endzeit sein
-            }
-            false
+            start != null && end != null && start.before(end)
         } catch (e: ParseException) {
             false
         }
