@@ -58,6 +58,8 @@ class WorkHoursActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
+        syncOfflineData() // Start synchronisation
+
         val addButton: Button = findViewById(R.id.addButton)
 
         val toggleTrackButton: Button = findViewById(R.id.toggleTrackButton)
@@ -490,6 +492,30 @@ class WorkHoursActivity : AppCompatActivity() {
 
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
         return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY
+    }
+
+    fun syncOfflineData() {
+        Log.d("WorkHoursActivity.kt", "syncOfflineData")
+        if (!NetworkUtils.isConnected(this)) return // If offline, do nothing
+        val userId = auth.currentUser?.uid ?: return
+        val unsyncedWorkHours = OfflineDataStore.getUnsyncedWorkHours()
+        if (unsyncedWorkHours.isEmpty()) {
+            Log.d("WorkHoursActivity.kt", "No offline data to sync")
+            return
+        }
+        val firestore = FirebaseFirestore.getInstance()
+        unsyncedWorkHours.forEach { workHour ->
+            firestore.collection("users").document(userId).collection("workHours")
+                .add(workHour.toHashMap())
+                .addOnSuccessListener {
+                    Log.d("WorkHoursActivity.kt", "syncOfflineData: Synced successfully")
+                    OfflineDataStore.clearSyncedWorkHours() // Delete successfully synchronised data
+                    Toast.makeText(this, getString(R.string.synced_data), Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Log.e("WorkHoursActivity.kt", "syncOfflineData: Sync failed")
+                }
+        }
     }
 
     private fun setupMenuNavigation() {
