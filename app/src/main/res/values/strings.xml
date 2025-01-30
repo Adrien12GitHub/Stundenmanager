@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Stundenmanager</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="input_incorrect">Incorrect input:</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="enter_email">Please enter your email</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+    <string name="reset_password">Password reset email sent</string>
+    <string name="reset_password_failed">Failed to send reset email</string>
 
     <!-- Work Hours -->
     <string name="my_workhours">Meine Arbeitszeiten</string>
