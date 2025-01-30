@@ -22,12 +22,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          
+
       - name: 🔑 Make Gradlew executable
         run: chmod +x gradlew
 
-      # 🔢 Increase versionCode automatically
-      - name: 🔢 Auto-Increment versionCode
+      # 🔢 Auto-Increment versionCode
+      - name: 🔢 Load and increment versionCode
         run: |
           VERSION_CODE=$(cat app/version.txt)
           NEW_VERSION_CODE=$((VERSION_CODE + 1))
@@ -35,7 +35,6 @@ jobs:
           echo "VERSION_CODE=$NEW_VERSION_CODE" >> $GITHUB_ENV
           echo "VERSION_NAME=0.$NEW_VERSION_CODE" >> $GITHUB_ENV
 
-        
       - name: 🛠️ Create the project (Gradle)
         run: ./gradlew assembleDebug
 
