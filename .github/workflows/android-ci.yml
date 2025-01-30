@@ -57,21 +57,50 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/**/*.apk
 
+      # 🛠 Debug GitHub PAT and Git settings
+      - name: 🛠 Debug GitHub PAT
+        run: |
+          echo "GitHub Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Testing GitHub PAT authentication..."
+          git remote -v
+          git branch
+        
+      - name: 🔄 Push new versionCode to GitHub
+        if: success() # Only if the build was successful!
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }} # Personal Access Token
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://${{ github.actor }}:${GH_PAT}@github.com/${{ github.repository }}.git
+
+          echo "🔎 Checking git status before commit..."
+          git status
+
+          echo "📦 Stashing uncommitted changes..."
+          git stash --include-untracked || echo "No changes to stash"
+
+          echo "🔄 Pulling latest changes from main..."
+          git pull --rebase origin main || echo "No rebase needed"
+
+          echo "📤 Applying stashed changes..."
+          git stash pop || echo "No stashed changes to apply"
+
+          echo "📝 Adding version.txt to commit..."
+          git add app/version.txt
+          git commit -m "Auto-increment versionCode to $VERSION_CODE" || echo "No changes to commit"
+
+          echo "🚀 Pushing changes to GitHub..."
+          git push origin HEAD:main || echo "❌ Push failed, check GitHub token permissions!"
+
       - name: 🔥 Firebase App Distribution Upload
+        if: success() # Prevents faulty builds in Firebase App Distribution.
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk #app/build/outputs/apk/release/app-release.apk
-          releaseNotes: "Build ${{ env.VERSION_NAME }} - Automatically uploaded by CI/CD"
-
-      - name: 🔄 Push new versionCode to GitHub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add app/version.txt
-          git commit -m "Auto-increment versionCode to $VERSION_CODE" || echo "No changes to commit"
-          git push origin HEAD:main
+          releaseNotes: "Build ${{ env.VERSION_NAME }} - Automatically uploaded by GitHub CI/CD"
