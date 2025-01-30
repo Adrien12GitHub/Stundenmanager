@@ -2,15 +2,18 @@ package com.example.stundenmanager
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.stundenmanager.absences.AbsencesActivity
 import com.example.stundenmanager.workhours.WorkHoursActivity
 import com.github.mikephil.charting.charts.PieChart
@@ -208,7 +211,10 @@ class StatisticsActivity : AppCompatActivity() {
         pieChart.isRotationEnabled = true
         pieChart.setUsePercentValues(true)
         pieChart.setEntryLabelTextSize(14f)
-        //pieChart.setEntryLabelColor(Color.BLACK)
+        val isDarkMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val labelColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        pieChart.legend.textColor = labelColor // Legend
+        pieChart.setEntryLabelColor(Color.BLACK) // Label in PieChart
         pieChart.centerText = getString(R.string.overview_work)
         pieChart.setCenterTextSize(20f)
     }
