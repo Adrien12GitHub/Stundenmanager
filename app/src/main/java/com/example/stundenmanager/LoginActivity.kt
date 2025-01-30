@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -52,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // ‘Forgot password’ TextView
-        findViewById<Button>(R.id.forgotPasswordTextView).setOnClickListener {
+        findViewById<TextView>(R.id.forgotPasswordTextView).setOnClickListener {
             showForgotPasswordDialog()
         }
     }
