@@ -1,5 +1,9 @@
 package com.example.stundenmanager
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -65,6 +69,9 @@ class MessagesActivity : AppCompatActivity() {
                 if (document != null) {
                     val shift = document.getString("shift") ?: "morning" // Default to "morning" if not found
                     callback(shift)
+                    // Schedule notification as soon as the shift has been loaded
+                    val shiftStartHour = if (shift == "morning") 6 else 14
+                    scheduleShiftReminder(this, shiftStartHour, if (shift == "morning") "Early shift" else "Late shift")
                 } else {
                     callback("morning") // Default shift in case of error
                 }
@@ -119,6 +126,41 @@ class MessagesActivity : AppCompatActivity() {
         }
 
         return shifts
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    fun scheduleShiftReminder(context: Context, shiftStartHour: Int, shiftType: String) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, shiftStartHour)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        // If the time has already passed, set a reminder for the next day
+        if (calendar.timeInMillis < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        val intent = Intent(context, ShiftReminderReceiver::class.java).apply {
+            putExtra("SHIFT_TYPE", shiftType)
+            putExtra("NOTIFICATION_ID", shiftStartHour) // Unique ID
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            shiftStartHour, // Unique ID per alarm
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
     }
 
     private fun setupMenuNavigation() {
