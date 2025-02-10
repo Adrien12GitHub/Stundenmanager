@@ -23,8 +23,26 @@ class RegisterActivity : AppCompatActivity() {
         findViewById<Button>(R.id.registerButton).setOnClickListener {
             val email = findViewById<EditText>(R.id.emailEditText).text.toString()
             val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
-            registerUser(email, password)
+            if (validateInput(email, password)) {
+                registerUser(email, password)
+            }
         }
+    }
+
+    private fun validateInput(email: String, password: String): Boolean {
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Email darf nicht leer sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Passwort darf nicht leer sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (password.length < 6) {
+            Toast.makeText(this, "Passwort muss mindestens 6 Zeichen lang sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private fun registerUser(email: String, password: String) {
