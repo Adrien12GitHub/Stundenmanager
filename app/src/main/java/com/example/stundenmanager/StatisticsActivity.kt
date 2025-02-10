@@ -6,14 +6,12 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.stundenmanager.absences.AbsencesActivity
 import com.example.stundenmanager.workhours.WorkHoursActivity
 import com.github.mikephil.charting.charts.PieChart
@@ -69,7 +67,7 @@ class StatisticsActivity : AppCompatActivity() {
             startActivity(Intent(this, ReportsActivity::class.java))
         }
         findViewById<ImageButton>(R.id.menu_statistics).setOnClickListener {
-            Toast.makeText(this, "You are already on the Statistics page", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Du bist bereits auf der Statistikseite", Toast.LENGTH_SHORT).show()
         }
     }
 
