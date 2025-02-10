@@ -35,27 +35,47 @@ class LoginActivity : AppCompatActivity() {
             val email = findViewById<EditText>(R.id.emailEditText).text.toString()
             val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
 
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d("LoginActivity", "signIn successful")
-                        // Login successful, redirect to HomeActivity
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Log.d("LoginActivity", "signIn failed")
-                        // If login fails, display a message to the user.
-                        Toast.makeText(baseContext, "Login failed: ${task.exception?.message}",
-                            Toast.LENGTH_SHORT).show()
+            if (validateInput(email, password)) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            Log.d("LoginActivity", "signIn successful")
+                            // Login successful, redirect to HomeActivity
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Log.d("LoginActivity", "signIn failed")
+                            // If login fails, display a message to the user.
+                            Toast.makeText(
+                                baseContext, "Login failed: ${task.exception?.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                }
+            }
         }
 
         // ‘Forgot password’ TextView
         findViewById<TextView>(R.id.forgotPasswordTextView).setOnClickListener {
             showForgotPasswordDialog()
         }
+    }
+
+    private fun validateInput(email: String, password: String): Boolean {
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Email darf nicht leer sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Passwort darf nicht leer sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (password.length < 6) {
+            Toast.makeText(this, "Passwort muss mindestens 6 Zeichen lang sein.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private fun showForgotPasswordDialog() {
