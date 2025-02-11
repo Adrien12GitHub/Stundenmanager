@@ -20,6 +20,9 @@
 - ✅ **Push Notifications for Shift Start & End**
 - ✅ **Offline Mode with Automatic Synchronization**
 
+## Overview
+
+
 ## Technologies Used 🛠️
 - **Frontend**: Android (Kotlin, XML, Jetpack Components)
 - **Backend**: Firebase Firestore (Cloud Database)
@@ -63,13 +66,6 @@ We use **GitHub Actions** for:
 3. **Commit changes**: `git commit -m 'Added new feature'`
 4. **Push to branch**: `git push origin feature/new-feature`
 5. **Open a Pull Request**
-
-## Roadmap 🛣️
-### TODOs
-- [ ] **Edit & Delete Work Hours and Absences**
-- [ ] **(Push) Notifications for Shifts**
-- [ ] **Prevent Work Hours Entry during Absence**
-- [ ] **Skip Shift if Absence Exists**
 
 ---
 📩 **Contact:** If you have any questions, feel free to reach out to the maintainers!
