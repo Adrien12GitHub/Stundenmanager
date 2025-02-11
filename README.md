@@ -21,7 +21,8 @@
 - ✅ **Offline Mode with Automatic Synchronization**
 
 ## Overview
-![Image](https://github.com/user-attachments/assets/936bffa1-c9d5-4c5b-a7a7-fe8233f013a5) ![Image](https://github.com/user-attachments/assets/912fc990-a297-48f7-8998-49615ac19cb2) ![Image](https://github.com/user-attachments/assets/5b2dcb9d-0147-44e9-8e08-0755c855c00d) ![Image](https://github.com/user-attachments/assets/ad7811b7-eb07-40c5-ad89-9efe726dcab9)
+<img src="https://github.com/user-attachments/assets/936bffa1-c9d5-4c5b-a7a7-fe8233f013a5" width="25" height="50"> <img src="https://github.com/user-attachments/assets/912fc990-a297-48f7-8998-49615ac19cb2" width="25" height="50">
+ <img src="https://github.com/user-attachments/assets/5b2dcb9d-0147-44e9-8e08-0755c855c00d" width="25" height="50"> <img src="https://github.com/user-attachments/assets/ad7811b7-eb07-40c5-ad89-9efe726dcab9" width="25" height="50">
 
 ## Technologies Used 🛠️
 - **Frontend**: Android (Kotlin, XML, Jetpack Components)
